@@ -1,0 +1,9 @@
+{
+  "imports": {
+    "std/": "https://deno.land/std@0.205.0/",
+    "oak": "https://deno.land/x/oak@v12.6.1/mod.ts",
+    "deno-slack-api": "https://deno.land/x/deno_slack_api@2.1.2/mod.ts",
+    "webhooks-types": "https://esm.sh/v133/@octokit/webhooks-types@7.3.1/schema.d.ts",
+    "@/": "./src/"
+  }
+}
