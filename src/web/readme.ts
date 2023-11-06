@@ -1,7 +1,7 @@
 import { CSS, render } from "gfm";
 
 export default async function() {
-  const markdown = await Deno.readTextFile("../../README.md");
+  const markdown = await Deno.readTextFile("README.md");
   const body = render(markdown);
   return `
   <!DOCTYPE html>
