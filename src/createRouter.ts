@@ -1,9 +1,15 @@
 import { Router } from "oak";
 import createContext from "@/webhook/createContext.ts";
 import postNotification from "@/webhook/postNotification.ts";
+import readme from "@/web/readme.ts";
 
-export default async function() {
+export default function() {
   const router = new Router();
+
+  router.get("/", async (context) => {
+    context.response.body = await readme();
+  });
+
 /*
   // settings
   const r1 = await client.apps.datastore.get({
@@ -32,7 +38,7 @@ export default async function() {
     }, {});
   }
 */
-  router.get("/", async (context) => {
+  router.get("/webhook", async (context) => {
     try {
       // payload -> context
       const webhookContext = createContext(context.request.body);

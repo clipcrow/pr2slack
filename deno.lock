@@ -1,0 +1,11 @@
+{
+  "version": "3",
+  "redirects": {
+    "https://esm.sh/v133/@types/he@~1.2/index.d.ts": "https://esm.sh/v133/@types/he@1.2.2/index.d.ts",
+    "https://esm.sh/v133/@types/katex@~0.16/index.d.ts": "https://esm.sh/v133/@types/katex@0.16.5/index.d.ts",
+    "https://esm.sh/v133/@types/marked@^5/index.d.ts": "https://esm.sh/v133/@types/marked@5.0.2/index.d.ts",
+    "https://esm.sh/v133/@types/prismjs@^1/index.d.ts": "https://esm.sh/v133/@types/prismjs@1.26.2/index.d.ts",
+    "https://esm.sh/v133/@types/sanitize-html@~2.8/index.d.ts": "https://esm.sh/v133/@types/sanitize-html@2.8.1/index.d.ts"
+  },
+  "remote": {}
+}
