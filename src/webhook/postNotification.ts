@@ -1,4 +1,4 @@
-import { SlackAPI } from "deno-slack-api";
+import { SlackAPI } from "slack";
 
 import getActualGraph from "./getActualGraph.ts";
 import { renderActionLog, renderNotification } from "./renderers.tsx";
