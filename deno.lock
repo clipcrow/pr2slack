@@ -2,9 +2,14 @@
   "version": "3",
   "packages": {
     "specifiers": {
+      "npm:@octokit/webhooks-types@7.3.1": "npm:@octokit/webhooks-types@7.3.1",
       "npm:jsx-slack@6.0.0": "npm:jsx-slack@6.0.0"
     },
     "npm": {
+      "@octokit/webhooks-types@7.3.1": {
+        "integrity": "sha512-u6355ZsZnHwmxen30SrqnYb1pXieBFkYgkNzt+Ed4Ao5tupN1OErHfzwiV6hq6duGkDAYASbq7/uVJQ69PjLEg==",
+        "dependencies": {}
+      },
       "@slack/types@2.9.0": {
         "integrity": "sha512-YfZGo0xVOmI7CHhiwCmEC33HzjQl1lakNmyo5GPGb4KHKEaUoY7zenAdKsYCJqYwdaM9OL+hqYt/tZ2zgvVc7g==",
         "dependencies": {}

@@ -10,7 +10,7 @@ import {
   Mrkdwn,
   Section,
   UsersSelect,
-} from "npm:jsx-slack@6";
+} from "jsx-slack";
 
 export type RepositoryMapping = {
   repositoryURL: string;

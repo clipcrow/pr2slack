@@ -1,4 +1,4 @@
-/** @jsxImportSource npm:jsx-slack@6.0.0 */
+/** @jsxImportSource npm:jsx-slack@6 */
 import {
   Blocks,
   Context,
@@ -7,7 +7,7 @@ import {
   Header,
   JSXSlack,
   Section,
-} from "npm:jsx-slack@6.0.0";
+} from "jsx-slack";
 import type {
   Connection,
   KeyValueStore,

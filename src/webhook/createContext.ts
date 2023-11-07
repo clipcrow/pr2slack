@@ -1,7 +1,4 @@
-import type {
-  PullRequestEvent,
-  PullRequestReviewEvent,
-} from "webhooks-types";
+import type { PullRequestEvent, PullRequestReviewEvent } from "webhooks-types";
 import type { GitHubUser, Review, WebhookContext } from "./types.ts";
 
 // deno-lint-ignore no-explicit-any

@@ -3,14 +3,14 @@ import createContext from "@/webhook/createContext.ts";
 import postNotification from "@/webhook/postNotification.ts";
 import readme from "@/web/readme.ts";
 
-export default function() {
+export default function () {
   const router = new Router();
 
   router.get("/", async (context) => {
     context.response.body = await readme();
   });
 
-/*
+  /*
   // settings
   const r1 = await client.apps.datastore.get({
     datastore: "repositoryMap",
@@ -37,7 +37,7 @@ export default function() {
       };
     }, {});
   }
-*/
+  */
   router.get("/webhook", async (context) => {
     try {
       // payload -> context
@@ -45,11 +45,11 @@ export default function() {
       if (webhookContext === null) {
         return { outputs: {} };
       }
-/*
+      /*
       if (webhookContext.baseRef !== branch) {
         return { outputs: {} };
       }
-    
+
       await postNotification(
         githubToken,
         token,
@@ -57,13 +57,13 @@ export default function() {
         userAccountMap,
         webhookContext,
       );
-*/
+      */
       context.response.body = "OK";
     } catch (e) {
       context.response.status = 500;
       context.response.body = e;
     }
   });
-  
+
   return router;
 }
