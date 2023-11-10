@@ -5,7 +5,6 @@
     "gfm": "https://deno.land/x/gfm@0.2.5/mod.ts",
     "slack": "https://deno.land/x/deno_slack_api@2.1.2/mod.ts",
     "jsx-slack": "npm:jsx-slack@6.0.0",
-    "webhooks-types": "npm:@octokit/webhooks-types@7.3.1/schema.d.ts",
-    "@/": "./src/"
+    "webhooks-types": "npm:@octokit/webhooks-types@7.3.1/schema.d.ts"
   }
 }

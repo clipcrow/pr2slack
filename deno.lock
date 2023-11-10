@@ -3,6 +3,7 @@
   "packages": {
     "specifiers": {
       "npm:@octokit/webhooks-types@7.3.1": "npm:@octokit/webhooks-types@7.3.1",
+      "npm:jsx-slack@6": "npm:jsx-slack@6.0.0",
       "npm:jsx-slack@6.0.0": "npm:jsx-slack@6.0.0"
     },
     "npm": {
@@ -149,6 +150,9 @@
     "https://deno.land/std@0.200.0/streams/write_all.ts": "aec90152978581ea62d56bb53a5cbf487e6a89c902f87c5969681ffbdf32b998",
     "https://deno.land/std@0.200.0/streams/writer_from_stream_writer.ts": "07c7ee025151a190f37fc42cbb01ff93afc949119ebddc6e0d0df14df1bf6950",
     "https://deno.land/std@0.200.0/streams/zip_readable_streams.ts": "a9d81aa451240f79230add674809dbee038d93aabe286e2d9671e66591fc86ca",
+    "https://deno.land/std@0.205.0/encoding/_util.ts": "f368920189c4fe6592ab2e93bd7ded8f3065b84f95cd3e036a4a10a75649dcba",
+    "https://deno.land/std@0.205.0/encoding/base64.ts": "cc03110d6518170aeaa68ec97f89c6d6e2276294b30807e7332591d7ce2e4b72",
+    "https://deno.land/std@0.205.0/encoding/base64url.ts": "7608862858d28a003f9d6cb78dd61e645ecd1ae1f45faf0e09a306eafe66b16e",
     "https://deno.land/std@0.67.0/_util/assert.ts": "e1f76e77c5ccb5a8e0dbbbe6cce3a56d2556c8cb5a9a8802fc9565af72462149",
     "https://deno.land/std@0.67.0/fs/_util.ts": "68508c05d5a02678179a02beabf2b3eac5b16c5a9cbd1c272686d8101bb2679d",
     "https://deno.land/std@0.67.0/fs/copy.ts": "b562e8f482cb8459bb011cbd769769bbdb4f6bc966effd277c06edbdbe41b72e",
@@ -273,6 +277,11 @@
     "https://deno.land/x/deno_slack_api@2.1.2/typed-method-types/workflows/triggers/trigger-filter.ts": "db0583587e893b9dd4e30e1e413c5b177ac032c9053510bcdbd3d099b23130b6",
     "https://deno.land/x/deno_slack_api@2.1.2/typed-method-types/workflows/triggers/webhook.ts": "eda0d5dffa7bd987d4d1134ba3f96508caaf1675a70049ac89aaa41e77c40007",
     "https://deno.land/x/deno_slack_api@2.1.2/types.ts": "092319fbe26d5e26b7289c3a3efcbf8c5be7f3e69727a0ee09808503f0719026",
+    "https://deno.land/x/djwt@v3.0.1/algorithm.ts": "b1c6645f9dbd6e6c47c123a3b18c28b956f91c65ed17f5b6d5d968fc3750542b",
+    "https://deno.land/x/djwt@v3.0.1/deps.ts": "c8b329dc18c54f93879699ffb728bd805d548f7c64c4d2916efa5fb2c712cc47",
+    "https://deno.land/x/djwt@v3.0.1/mod.ts": "eca176976595654b8a536e7b8029a029c435d079ef58feff2d3bde33ea107417",
+    "https://deno.land/x/djwt@v3.0.1/signature.ts": "a5649368a4b433b2810e7d47f53661fe3b0f7fe1778cb49234ceae3d6e861185",
+    "https://deno.land/x/djwt@v3.0.1/util.ts": "5cb264d2125c553678e11446bcfa0494025d120e3f59d0a3ab38f6800def697d",
     "https://deno.land/x/emoji@0.3.0/all.json": "f0553b660db5e44e71ca46f637a06c2ec94f34445a920fcf319858094a91f46b",
     "https://deno.land/x/emoji@0.3.0/emoji.ts": "ad21fa393b2b96fb5999f58dec18e13628cc5d11aa370c42a2f7cc8e135d43d8",
     "https://deno.land/x/emoji@0.3.0/mod.ts": "9ef5a2fca1a633f29747b6d3254afd19545cef586128a8213a1003ee2808186d",

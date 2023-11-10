@@ -1,8 +1,10 @@
 import { Application } from "oak";
-import createRouter from "@/createRouter.ts";
+import createRouter from "./src/createRouter.ts";
 
 const app = new Application();
-const router = await createRouter();
+
+const router = createRouter();
 app.use(router.routes());
 app.use(router.allowedMethods());
+
 await app.listen({ port: 8080 });

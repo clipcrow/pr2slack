@@ -1,11 +1,6 @@
 import { create, getNumericDate } from "djwt";
-import type { ApplicationHook } from "./types.ts";
 
-export function isApplicationHook(test: unknown): test is ApplicationHook {
-  return (test as ApplicationHook).installation !== undefined;
-}
-
-export async function getInstallationToken (
+export async function getInstallationToken(
   gitHubAppID: string,
   privateKey: CryptoKey,
   installationID: number,
