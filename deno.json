@@ -1,7 +1,6 @@
 {
   "imports": {
     "oak": "https://deno.land/x/oak@v16.1.0/mod.ts",
-    "djwt": "https://deno.land/x/djwt@v3.0.2/mod.ts",
     "gfm": "https://deno.land/x/gfm@0.6.0/mod.ts",
     "slack": "https://deno.land/x/deno_slack_api@2.7.0/mod.ts",
     "jsx-slack": "npm:jsx-slack@6.1.1",

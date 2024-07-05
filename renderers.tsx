@@ -284,7 +284,7 @@ function ClosedLog(props: RenderModel) {
   );
 }
 
-function ReopenedLog(props: RenderModel) {
+function ReopenedLog(_: RenderModel) {
   return (
     <Blocks>
       <Context>
