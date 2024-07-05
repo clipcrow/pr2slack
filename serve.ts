@@ -35,7 +35,7 @@ async function readme() {
 }
 
 function getEnv(key: string): string {
-  return Deno.env.get(key) || env[key] || "";
+  return Deno.env.get(key) || env[key];
 }
 
 function isWebhookContext(test: unknown): test is WebhookContext {
