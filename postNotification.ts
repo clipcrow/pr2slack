@@ -1,6 +1,6 @@
 import { SlackAPI } from "slack";
 import { renderActionLog, renderNotification } from "./renderers.tsx";
-import type { KeyValueStore, WebhookContext, ActualGraph } from "./types.ts";
+import type { ActualGraph, KeyValueStore, WebhookContext } from "./types.ts";
 
 const pull_request_graph_query = `
 query ($owner: String!, $name: String!, $number: Int!) {

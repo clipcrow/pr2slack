@@ -1,52 +1,8 @@
-import { create, getNumericDate } from "djwt";
-import { Context } from "oak";
 import type { PullRequestEvent, PullRequestReviewEvent } from "webhooks-types";
-import type { GitHubUser, Review, WebhookContext, ApplicationHook } from "./types.ts";
-import postNotification from "./postNotification.ts";
-
-const kv = await Deno.openKv();
-
-function isApplicationHook(test: unknown): test is ApplicationHook {
-  return (test as ApplicationHook).installation !== undefined;
-}
-
-async function getInstallationToken(
-  gitHubAppID: string,
-  privateKey: CryptoKey,
-  installationID: number,
-) {
-  const now = Date.now();
-  const jwt = await create(
-    {
-      alg: "RS256",
-    },
-    {
-      iat: getNumericDate(now - 60),
-      exp: getNumericDate(now + 10 * 60),
-      iss: gitHubAppID,
-    },
-    privateKey,
-  );
-
-  const response = await fetch(
-    `https://api.github.com/app/installations/${installationID}/access_tokens`,
-    {
-      method: "GET",
-      headers: {
-        Accept: "application/vnd.github+json",
-        Authorization: `Bearer ${jwt}`,
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-    },
-  );
-  if (!response.ok) {
-    throw new Error(`Fetch error: ${response.statusText}`);
-  }
-  return await response.json();
-}
+import type { GitHubUser, Review, WebhookContext } from "./types.ts";
 
 // deno-lint-ignore no-explicit-any
-function createContext(payload: any): WebhookContext | null {
+export default function (payload: any): WebhookContext | null {
   const pullRequestEvent = payload as PullRequestEvent;
   const { sender, action, repository, pull_request } = pullRequestEvent;
 
@@ -112,11 +68,4 @@ function createContext(payload: any): WebhookContext | null {
 
   console.log({ webhookContext });
   return webhookContext;
-}
-
-export default async function (context: Context) {
-  const json = context.request.body;
-  if (isApplicationHook(json)) {
-
-  }
 }

@@ -1,10 +1,3 @@
-export type ApplicationHook = {
-  installation: {
-    id: number;
-    node_id: string;
-  };
-};
-
 export type GitHubUser = {
   login: string;
   url: string;

@@ -1,4 +1,3 @@
-/** @jsxImportSource npm:jsx-slack@6 */
 import {
   Blocks,
   Button,
