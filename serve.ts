@@ -79,6 +79,7 @@ router.post("/webhook", (context) => {
     console.log("enqueue");
     kv.enqueue(cx);
   }
+  context.response.status = 200;
 });
 
 const app = new Application();
