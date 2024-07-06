@@ -21,6 +21,7 @@
       "jsr:@std/media-types@0.224": "jsr:@std/media-types@0.224.1",
       "jsr:@std/path@0.223": "jsr:@std/path@0.223.0",
       "npm:@octokit/webhooks-types@7.5.1": "npm:@octokit/webhooks-types@7.5.1",
+      "npm:@types/node": "npm:@types/node@18.16.19",
       "npm:jsx-slack@6.1.1": "npm:jsx-slack@6.1.1",
       "npm:path-to-regexp@6.2.1": "npm:path-to-regexp@6.2.1"
     },
@@ -108,6 +109,10 @@
       },
       "@slack/types@2.12.0": {
         "integrity": "sha512-yFewzUomYZ2BYaGJidPuIgjoYj5wqPDmi7DLSaGIkf+rCi4YZ2Z3DaiYIbz7qb/PL2NmamWjCvB7e9ArI5HkKg==",
+        "dependencies": {}
+      },
+      "@types/node@18.16.19": {
+        "integrity": "sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==",
         "dependencies": {}
       },
       "jsx-slack@6.1.1": {

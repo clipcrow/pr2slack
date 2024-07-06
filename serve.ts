@@ -1,4 +1,4 @@
-import { Application, Context, Router } from "oak";
+import { Application, Router } from "oak";
 import { CSS, KATEX_CSS, render } from "gfm";
 import { load } from "std/dotenv/mod.ts";
 import type { WebhookContext } from "./types.ts";
@@ -7,9 +7,7 @@ import postNotification from "./postNotification.ts";
 
 const env = await load();
 
-async function readme() {
-  const markdown = await Deno.readTextFile("README.md");
-  const body = render(markdown);
+function getHTML(body: string) {
   return `
   <!DOCTYPE html>
   <html lang="en">
@@ -34,6 +32,11 @@ async function readme() {
   `;
 }
 
+async function readme() {
+  const markdown = await Deno.readTextFile("README.md");
+  return getHTML(render(markdown));
+}
+
 function getEnv(key: string): string {
   return Deno.env.get(key) || env[key];
 }
@@ -55,10 +58,20 @@ kv.listenQueue(async (cx) => {
 });
 
 const router = new Router();
+
 router.get("/", async (context) => {
   context.response.body = await readme();
 });
-router.get("/webhook", (context: Context) => {
+
+router.get("/env", (context) => {
+  context.response.body = getHTML(
+    `- GITHUB_TOKEN: ${githubToken.slice(0, 5)}...\n` +
+    `- SLACK_TOKEN: ${slackToken.slice(0, 5)}...\n` + 
+    `- SLACK_CHANNEL: ${slackChannel}`,
+  );
+})
+
+router.get("/webhook", (context) => {
   const payload = context.request.body;
   const cx = createContext(payload);
   if (cx) {
@@ -67,6 +80,7 @@ router.get("/webhook", (context: Context) => {
 });
 
 const app = new Application();
+
 app.use(router.routes());
 app.use(router.allowedMethods());
 
