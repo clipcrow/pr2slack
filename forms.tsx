@@ -101,6 +101,7 @@ export function renderUserAccountMappingForm(items: UserAccountMapping[]) {
         label="GitHub Account"
         blockId="githubAccount"
         name="state"
+        value={undefined}
         type="text"
         required
       />
@@ -108,6 +109,7 @@ export function renderUserAccountMappingForm(items: UserAccountMapping[]) {
         label="Slack Account"
         blockId="slackAccount"
         name="state"
+        value={undefined}
         required
       />
       <Divider />
