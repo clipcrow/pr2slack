@@ -74,15 +74,11 @@ router.get("/env", (context) => {
 
 router.post("/webhook", async (context) => {
   if (context.request.hasBody) {
-    const payload = await context.request.body.json();
-    console.log(payload);
-    const cx = createContext(payload);
-    console.log(cx);
+    const cx = createContext(await context.request.body.json());
     if (cx) {
-      console.log("enqueue");
       kv.enqueue(cx);
+      context.response.status = 200;
     }
-    context.response.status = 200;
   }
 });
 
