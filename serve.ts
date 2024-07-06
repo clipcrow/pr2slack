@@ -7,7 +7,8 @@ import postNotification from "./postNotification.ts";
 
 const env = await load();
 
-function getHTML(body: string) {
+function getHTML(markdown: string) {
+  const body = render(markdown);
   return `
   <!DOCTYPE html>
   <html lang="en">
@@ -33,8 +34,7 @@ function getHTML(body: string) {
 }
 
 async function readme() {
-  const markdown = await Deno.readTextFile("README.md");
-  return getHTML(render(markdown));
+  return getHTML(await Deno.readTextFile("README.md"));
 }
 
 function getEnv(key: string): string {
@@ -65,8 +65,8 @@ router.get("/", async (context) => {
 
 router.get("/env", (context) => {
   context.response.body = getHTML(
-    `- GITHUB_TOKEN: ${githubToken.slice(0, 5)}...\n` +
-    `- SLACK_TOKEN: ${slackToken.slice(0, 5)}...\n` + 
+    `- GITHUB_TOKEN: ${githubToken.slice(0, 8)}...${githubToken.slice(-8)}\n` +
+    `- SLACK_TOKEN: ${slackToken.slice(0, 8)}...${slackToken.slice(-8)}\n` + 
     `- SLACK_CHANNEL: ${slackChannel}`,
   );
 })
