@@ -22,10 +22,8 @@ export type UserAccountMapping = {
   slackAccount: string;
 };
 
-export function renderRepositoryMappingForm(
-  props: { items: RepositoryMapping[]; slackChannel: string | undefined },
-) {
-  const fields = props.items.map((value) => {
+export function renderRepositoryMappingForm(items: RepositoryMapping[]) {
+  const fields = items.map((value) => {
     return (
       <Section>
         <Field>
@@ -71,7 +69,6 @@ export function renderRepositoryMappingForm(
         label="Channel for notifying pull-requests"
         blockId="slackChannel"
         name="state"
-        value={props.slackChannel}
         required
       />
       <Divider />
@@ -80,10 +77,8 @@ export function renderRepositoryMappingForm(
   );
 }
 
-export function renderUserAccountMappingForm(
-  props: { items: UserAccountMapping[]; slackAccount: string | undefined },
-) {
-  const fields = props.items.map((value) => {
+export function renderUserAccountMappingForm(items: UserAccountMapping[]) {
+  const fields = items.map((value) => {
     return (
       <Section>
         <Field>{value.githubAccount}</Field>
@@ -113,7 +108,6 @@ export function renderUserAccountMappingForm(
         label="Slack Account"
         blockId="slackAccount"
         name="state"
-        value={props.slackAccount}
         required
       />
       <Divider />

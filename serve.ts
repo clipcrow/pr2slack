@@ -4,6 +4,7 @@ import { load } from "std/dotenv/mod.ts";
 import type { WebhookContext } from "./types.ts";
 import createContext from "./createContext.ts";
 import postNotification from "./postNotification.ts";
+import openDialog from "./openDialog.ts";
 
 const env = await load();
 
@@ -82,8 +83,12 @@ router.post("/webhook", async (context) => {
 });
 
 router.post("/action", async (context) => {
-  console.log((await context.request.body.formData()).get("trigger_id"));
-  context.response.status = 200;
+  const payload = JSON.parse((await context.request.body.formData()).get("payload") as string);
+  console.log(payload);
+  if (payload?.container?.trigger_id) {
+    openDialog(slackToken, payload.container.trigger_id);
+    context.response.status = 200;
+  }
 });
 
 const app = new Application();
