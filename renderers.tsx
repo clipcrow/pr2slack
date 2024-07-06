@@ -17,6 +17,8 @@ import type {
   ReviewRequest,
 } from "./types.ts";
 
+type OnNeedMapping = (needs: boolean) => void;
+
 function Description(props: { text: string | null }) {
   return (props.text
     ? (
@@ -27,7 +29,10 @@ function Description(props: { text: string | null }) {
     : null);
 }
 
-function UserLink(props: { login: string; slack?: string }) {
+function UserLink(props: { login: string; slack?: string; onNeed?: OnNeedMapping }) {
+  if (props.onNeed) {
+    props.onNeed(!!props.slack);
+  }
   return (props.slack ? <a href={`@${props.slack}`} /> : <i>{props.login}</i>);
 }
 
@@ -50,6 +55,7 @@ function Reviewers(
     userAccountMap: KeyValueStore<string>;
     reviewers: string[];
     text: string;
+    onNeed: OnNeedMapping
   },
 ) {
   const count = props.reviewers.length;
@@ -62,7 +68,7 @@ function Reviewers(
       {props.reviewers.map((login) => {
         return (
           <span>
-            <UserLink login={login} slack={props.userAccountMap[login]} />
+            <UserLink login={login} slack={props.userAccountMap[login]} onNeed={props.onNeed}/>
           </span>
         );
       })}
@@ -118,7 +124,7 @@ function arrangeReviewers(
   );
 }
 
-function Commits(props: RenderModel) {
+function Commits(props: RenderModel & { onNeed: OnNeedMapping }) {
   const {
     url,
     pullRequest: {
@@ -138,7 +144,7 @@ function Commits(props: RenderModel) {
     <Context>
       <span>
         [<b>{state}</b>]{" "}
-        <UserLink login={login} slack={props.userAccountMap[login]} />
+        <UserLink login={login} slack={props.userAccountMap[login]} onNeed={props.onNeed} />
         {` ${text} ${totalCount} ${commitUnit} (${changedFiles} file ${changeUnit}) into `}
         <BranchLink url={url} ref={base} /> from{" "}
         <BranchLink url={url} ref={head} static={merged} />
@@ -172,7 +178,7 @@ const no_review = "No requested reviewer";
 const ch_requested = "Changes requested";
 const rv_requested = "Review requested";
 
-function Approvals(props: RenderModel) {
+function Approvals(props: RenderModel & { onNeed: OnNeedMapping }) {
   const { state, reviewRequests, reviews } = props.repository.pullRequest;
   if (state !== "OPEN") {
     return null;
@@ -206,16 +212,19 @@ function Approvals(props: RenderModel) {
         userAccountMap={props.userAccountMap}
         reviewers={approvals}
         text={`approval${unit(approvals)}`}
+        onNeed={props.onNeed}
       />
       <Reviewers
         userAccountMap={props.userAccountMap}
         reviewers={changeRequesteds}
         text={`reviewer${unit(approvals)} requested changes`}
+        onNeed={props.onNeed}
       />
       <Reviewers
         userAccountMap={props.userAccountMap}
         reviewers={pendings}
         text={`pending reviewer${unit(approvals)}`}
+        onNeed={props.onNeed}
       />
     </Fragment>
   );
@@ -260,17 +269,26 @@ function Repository(props: RenderModel) {
 }
 
 export function renderNotification(props: RenderModel) {
+  let needMapping = false;
+  const callback = (need: boolean) => {
+    if (need) {
+      needMapping = true;
+    }
+  }
+  const actions = (
+    <Actions>
+      <Button actionId="dialog_open" value="account_mapping">Account Mapping</Button>
+    </Actions> 
+  );
   return JSXSlack(
     <Blocks>
-      <Commits {...props} />
+      <Commits {...props} onNeed={callback} />
       <Contents {...props} />
-      <Approvals {...props} />
+      <Approvals {...props} onNeed={callback} />
       <Conflicts {...props} />
       <Repository {...props} />
       <Divider />
-      <Actions>
-        <Button actionId="dialog_open" value="account_mapping">Dialog</Button>
-      </Actions>
+      {needMapping ? actions : null}  
     </Blocks>,
   );
 }
