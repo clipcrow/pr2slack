@@ -72,16 +72,18 @@ router.get("/env", (context) => {
   );
 })
 
-router.post("/webhook", (context) => {
-  const payload = context.request.body;
-  console.log(payload);
-  const cx = createContext(payload);
-  console.log(cx);
-  if (cx) {
-    console.log("enqueue");
-    kv.enqueue(cx);
+router.post("/webhook", async (context) => {
+  if (context.request.hasBody) {
+    const payload = await context.request.body.json();
+    console.log(payload);
+    const cx = createContext(payload);
+    console.log(cx);
+    if (cx) {
+      console.log("enqueue");
+      kv.enqueue(cx);
+    }
+    context.response.status = 200;
   }
-  context.response.status = 200;
 });
 
 const app = new Application();
