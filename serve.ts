@@ -100,7 +100,7 @@ router.post("/action", async (context) => {
 
     context.response.body = {
       response_action: "update",
-      view: renderUserAccountMappingForm([]),
+      view: { ...renderUserAccountMappingForm([]), state: undefined },
     };
     context.response.status = 200;
   }
