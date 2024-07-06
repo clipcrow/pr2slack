@@ -102,14 +102,12 @@ export function renderUserAccountMappingForm(items: UserAccountMapping[]) {
         blockId="githubAccount"
         name="state"
         type="text"
-        value=""
         required
       />
       <UsersSelect
         label="Slack Account"
         blockId="slackAccount"
         name="state"
-        value=""
         required
       />
       <Divider />
