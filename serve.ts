@@ -75,6 +75,7 @@ router.get("/env", (context) => {
 router.post("/webhook", (context) => {
   const payload = context.request.body;
   const cx = createContext(payload);
+  console.log(cx);
   if (cx) {
     console.log("enqueue");
     kv.enqueue(cx);
