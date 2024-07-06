@@ -85,8 +85,9 @@ router.post("/webhook", async (context) => {
 router.post("/action", async (context) => {
   const payload = JSON.parse((await context.request.body.formData()).get("payload") as string);
   payload.message = undefined;
+  payload.view = undefined;
   console.log(payload);
-  if (payload?.trigger_id) {
+  if (payload?.type === "block_actions" && payload?.trigger_id) {
     openDialog(slackToken, payload.trigger_id);
     context.response.status = 200;
   }
