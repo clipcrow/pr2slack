@@ -53,6 +53,7 @@ const slackChannel = getEnv("SLACK_CHANNEL");
 
 kv.listenQueue(async (cx) => {
   if (isWebhookContext(cx)) {
+    console.log("dequeue");
     await postNotification(githubToken, slackToken, slackChannel, {}, cx);
   }
 });
@@ -75,6 +76,7 @@ router.get("/webhook", (context) => {
   const payload = context.request.body;
   const cx = createContext(payload);
   if (cx) {
+    console.log("enqueue");
     kv.enqueue(cx);
   }
 });
