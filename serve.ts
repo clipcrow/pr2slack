@@ -82,7 +82,7 @@ router.post("/webhook", async (context) => {
 });
 
 router.post("/action", async (context) => {
-  console.log((await context.request.body.formData()).get("payload"));
+  console.log((await context.request.body.formData()).get("trigger_id"));
   context.response.status = 200;
 });
 
