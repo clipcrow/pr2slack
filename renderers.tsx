@@ -31,7 +31,7 @@ function Description(props: { text: string | null }) {
 
 function UserLink(props: { login: string; slack?: string; onNeed?: OnNeedMapping }) {
   if (props.onNeed) {
-    props.onNeed(!!props.slack);
+    props.onNeed(!props.slack);
   }
   return (props.slack ? <a href={`@${props.slack}`} /> : <i>{props.login}</i>);
 }
