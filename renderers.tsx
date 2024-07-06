@@ -1,5 +1,7 @@
 import {
+Actions,
   Blocks,
+  Button,
   Context,
   Divider,
   Fragment,
@@ -266,6 +268,9 @@ export function renderNotification(props: RenderModel) {
       <Conflicts {...props} />
       <Repository {...props} />
       <Divider />
+      <Actions>
+        <Button actionId="action" value="dialog_01" style="primary">Dialog</Button>
+      </Actions>
     </Blocks>,
   );
 }

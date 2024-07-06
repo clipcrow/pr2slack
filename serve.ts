@@ -82,6 +82,11 @@ router.post("/webhook", async (context) => {
   }
 });
 
+router.post("/action", async (context) => {
+  console.log(await context.request.body.json());
+  context.response.status = 200;
+});
+
 const app = new Application();
 
 app.use(router.routes());

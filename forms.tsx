@@ -1,5 +1,5 @@
 import {
-  Blocks,
+  Modal,
   Button,
   ChannelsSelect,
   Divider,
@@ -45,7 +45,7 @@ export function renderRepositoryMappingForm(
     );
   });
   return JSXSlack(
-    <Blocks>
+    <Modal title="PR2Slack" >
       <Input
         label="GitHub Repository Owner"
         blockId="repositoryOwner"
@@ -76,7 +76,7 @@ export function renderRepositoryMappingForm(
       />
       <Divider />
       {fields}
-    </Blocks>,
+    </Modal>,
   );
 }
 
@@ -101,7 +101,7 @@ export function renderUserAccountMappingForm(
     );
   });
   return JSXSlack(
-    <Blocks>
+    <Modal title="PR2Slack">
       <Input
         label="GitHub Account"
         blockId="githubAccount"
@@ -118,6 +118,6 @@ export function renderUserAccountMappingForm(
       />
       <Divider />
       {fields}
-    </Blocks>,
+    </Modal>,
   );
 }
