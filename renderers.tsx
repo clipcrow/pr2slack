@@ -269,7 +269,7 @@ export function renderNotification(props: RenderModel) {
       <Repository {...props} />
       <Divider />
       <Actions>
-        <Button actionId="action" value="dialog_01" style="primary">Dialog</Button>
+        <Button actionId="dialog_open" value="account_mapping">Dialog</Button>
       </Actions>
     </Blocks>,
   );
