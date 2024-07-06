@@ -5,6 +5,7 @@ import type { WebhookContext } from "./types.ts";
 import createContext from "./createContext.ts";
 import postNotification from "./postNotification.ts";
 import openDialog from "./openDialog.ts";
+import { renderUserAccountMappingForm } from "./forms.tsx";
 
 const env = await load();
 
@@ -86,14 +87,22 @@ router.post("/action", async (context) => {
   const formData = await context.request.body.formData();
   const payload = JSON.parse(formData.get("payload") as string);
   
-  console.log(payload.message);
-  console.log(payload.view);
-  payload.message = undefined;
-  payload.view = undefined;
-  console.log(payload);
-  
-  if (payload?.type === "block_actions" && payload?.trigger_id) {
+  if (payload.type === "block_actions" && payload.trigger_id) {
+    console.log(payload.message);
+    payload.message = undefined;
+    console.log(payload);
+
     openDialog(slackToken, payload.trigger_id);
+    context.response.status = 200;
+  } else if (payload.type === "view_submission") {
+    console.log(payload.view);
+    payload.view = undefined;
+    console.log(payload);
+
+    context.response.body = {
+      response_action: "update",
+      view: renderUserAccountMappingForm([]),
+    };
     context.response.status = 200;
   }
 });
