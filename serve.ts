@@ -88,7 +88,6 @@ router.post("/action", async (context) => {
   const payload = JSON.parse(formData.get("payload") as string);
   
   if (payload.type === "block_actions" && payload.trigger_id) {
-    console.log(payload.message);
     payload.message = undefined;
     console.log(payload);
 
