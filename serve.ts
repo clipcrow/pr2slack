@@ -74,6 +74,7 @@ router.get("/env", (context) => {
 
 router.post("/webhook", (context) => {
   const payload = context.request.body;
+  console.log(payload);
   const cx = createContext(payload);
   console.log(cx);
   if (cx) {
