@@ -128,6 +128,7 @@ router.post("/action", async (context) => {
   ) {
 
     payload.message = undefined;
+    payload.view = undefined;
     console.log(payload);
 
     const userAccountMap = await listAccountMapping();
