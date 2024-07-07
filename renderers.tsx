@@ -283,17 +283,6 @@ export function renderNotification(props: RenderModel) {
   const callback = (githubAccount: string) => {
     if (!needMapping.includes(githubAccount)) needMapping.push(githubAccount);
   };
-  const actions = (
-    <Actions>
-      {needMapping.map((account) => {
-        return (
-          <Button actionId="dialog_open" value={account}>
-            {account}
-          </Button>
-        );
-      })}
-    </Actions>
-  );
   return JSXSlack(
     <Blocks>
       <Commits {...props} onNeed={callback} />
@@ -302,7 +291,19 @@ export function renderNotification(props: RenderModel) {
       <Conflicts {...props} />
       <Repository {...props} />
       <Divider />
-      {needMapping.length > 0 ? actions : null}
+      {needMapping.length > 0
+        ? (
+          <Actions>
+            {needMapping.map((account) => {
+              return (
+                <Button actionId="dialog_open" value={account}>
+                  {account}
+                </Button>
+              );
+            })}
+          </Actions>
+        )
+        : null}
     </Blocks>,
   );
 }

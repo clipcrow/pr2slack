@@ -125,7 +125,13 @@ router.post("/action", async (context) => {
     const action = payload.actions[0];
     if (action?.action_id === "dialog_open" && payload.trigger_id) {
       const userAccountMap = await listAccountMapping();
-      openDialog(slackToken, payload.trigger_id, userAccountMap, false, action.value);
+      openDialog(
+        slackToken,
+        payload.trigger_id,
+        userAccountMap,
+        false,
+        action.value,
+      );
       context.response.status = 200;
       return;
     } else if (action?.action_id === "delete_account" && payload.view.id) {
