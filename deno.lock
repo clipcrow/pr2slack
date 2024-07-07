@@ -15,13 +15,12 @@
       "jsr:@std/encoding@1.0.0-rc.2": "jsr:@std/encoding@1.0.0-rc.2",
       "jsr:@std/encoding@^0.223.0": "jsr:@std/encoding@0.223.0",
       "jsr:@std/http@0.223": "jsr:@std/http@0.223.0",
-      "jsr:@std/http@0.224": "jsr:@std/http@0.224.4",
+      "jsr:@std/http@0.224": "jsr:@std/http@0.224.5",
       "jsr:@std/io@0.223": "jsr:@std/io@0.223.0",
       "jsr:@std/media-types@0.223": "jsr:@std/media-types@0.223.0",
       "jsr:@std/media-types@0.224": "jsr:@std/media-types@0.224.1",
       "jsr:@std/path@0.223": "jsr:@std/path@0.223.0",
       "npm:@octokit/webhooks-types@7.5.1": "npm:@octokit/webhooks-types@7.5.1",
-      "npm:@types/node": "npm:@types/node@18.16.19",
       "npm:jsx-slack@6.1.1": "npm:jsx-slack@6.1.1",
       "npm:path-to-regexp@6.2.1": "npm:path-to-regexp@6.2.1"
     },
@@ -77,8 +76,8 @@
           "jsr:@std/encoding@^0.223.0"
         ]
       },
-      "@std/http@0.224.4": {
-        "integrity": "7bcae028e408ab65d6802805ee9a807766c9d20a2959de576126e2f25c17ec04",
+      "@std/http@0.224.5": {
+        "integrity": "b03b5d1529f6c423badfb82f6640f9f2557b4034cd7c30655ba5bb447ff750a4",
         "dependencies": [
           "jsr:@std/encoding@1.0.0-rc.2"
         ]
@@ -109,10 +108,6 @@
       },
       "@slack/types@2.12.0": {
         "integrity": "sha512-yFewzUomYZ2BYaGJidPuIgjoYj5wqPDmi7DLSaGIkf+rCi4YZ2Z3DaiYIbz7qb/PL2NmamWjCvB7e9ArI5HkKg==",
-        "dependencies": {}
-      },
-      "@types/node@18.16.19": {
-        "integrity": "sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==",
         "dependencies": {}
       },
       "jsx-slack@6.1.1": {
