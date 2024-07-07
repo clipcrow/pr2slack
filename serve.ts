@@ -127,9 +127,7 @@ router.post("/action", async (context) => {
     payload.type === "block_actions" && payload.trigger_id
   ) {
 
-    payload.message = undefined;
-    payload.view = undefined;
-    console.log(payload);
+    console.log(payload.actions[0]);
 
     const userAccountMap = await listAccountMapping();
     openDialog(slackToken, payload.trigger_id, userAccountMap);
