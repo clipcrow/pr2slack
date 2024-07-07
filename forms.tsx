@@ -47,7 +47,7 @@ export function renderRepositoryMappingForm(
     );
   });
   return JSXSlack(
-    <Modal title="PR2Slack">
+    <Modal title="Specify Slack channel">
       <Input
         label="GitHub Repository Owner"
         blockId="repositoryOwner"
@@ -105,7 +105,7 @@ export function renderUserAccountMappingForm(
     );
   });
   return JSXSlack(
-    <Modal title="PR2Slack">
+    <Modal title="Link a Slack account">
       <Input
         label="GitHub Account"
         blockId="githubAccount"
