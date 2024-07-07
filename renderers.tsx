@@ -302,7 +302,7 @@ export function renderNotification(props: RenderModel) {
       <Conflicts {...props} />
       <Repository {...props} />
       <Divider />
-      {needMapping.length ? null : actions}
+      {needMapping.length > 0 ? actions : null}
     </Blocks>,
   );
 }
