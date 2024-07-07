@@ -122,18 +122,17 @@ router.post("/action", async (context) => {
   const payload = JSON.parse(formData.get("payload") as string);
 
   console.log(payload.type);
-  
+
   if (payload.type === "block_actions" && payload.trigger_id) {
     const action = payload.actions[0];
     if (action?.action_id === "dialog_open") {
       const userAccountMap = await listAccountMapping();
-      openDialog(slackToken, payload.trigger_id, userAccountMap);
+      openDialog(slackToken, payload.trigger_id, userAccountMap, false);
       context.response.status = 200;
     } else if (action?.action_id === "delete_account") {
       deleteAccountMapping(action.value);
-      context.response.body = {
-        response_action: "clear",
-      };
+      const userAccountMap = await listAccountMapping();
+      openDialog(slackToken, payload.view_id, userAccountMap, true);
       context.response.status = 200;
     }
   } else if (payload.type === "view_submission") {
@@ -144,7 +143,6 @@ router.post("/action", async (context) => {
         form.slackAccount.state.selected_user,
       );
     }
-    context.response.body = { response_action: "clear" };
     context.response.status = 200;
   } else {
     console.log(

@@ -4,12 +4,15 @@ import type { KeyValueStore } from "./types.ts";
 
 export default function (
   slackToken: string,
-  trigger_id: string,
+  target: string,
   userAccountMap: KeyValueStore<string>,
+  update: boolean,
 ) {
   const client = SlackAPI(slackToken);
-  client.views.open({
-    trigger_id,
-    view: renderUserAccountMappingForm(userAccountMap),
-  });
+  const view = renderUserAccountMappingForm(userAccountMap);
+  if (update) {
+    client.views.update({ view, trigger_id: target});
+  } else {
+    client.views.open({ view, view_id: target});
+  }
 }
