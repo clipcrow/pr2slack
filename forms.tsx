@@ -38,7 +38,7 @@ export function renderRepositoryMappingForm(
         </Field>
         <Button
           style="danger"
-          name="deleteRepository"
+          name="delete_repository"
           value={url}
         >
           DELETE
@@ -95,7 +95,7 @@ export function renderUserAccountMappingForm(
         </Field>
         <Button
           style="danger"
-          name="deleteUserAccount"
+          name="delete_account"
           value={githubAccount}
         >
           DELETE
