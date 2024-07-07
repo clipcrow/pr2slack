@@ -135,7 +135,7 @@ router.post("/action", async (context) => {
       const userAccountMap = await listAccountMapping();
       context.response.body = {
         response_action: "update",
-        view: renderUserAccountMappingForm(userAccountMap), 
+        view: renderUserAccountMappingForm({ ...userAccountMap, "aida-gnk": "U7Y91QNGM" }), 
       };
       context.response.status = 200;
     }
