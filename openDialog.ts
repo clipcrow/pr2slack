@@ -11,8 +11,8 @@ export default function (
   const client = SlackAPI(slackToken);
   const view = renderUserAccountMappingForm(userAccountMap);
   if (update) {
-    client.views.update({ view, trigger_id: target});
+    client.views.update({ view, view_id: target});
   } else {
-    client.views.open({ view, view_id: target});
+    client.views.open({ view, trigger_id: target});
   }
 }
