@@ -78,7 +78,7 @@ function setAccountMapping(githubAccount: string, slackAccount: string) {
 }
 
 function deleteAccountMapping(githubAccount: string) {
-  kv.atomic().delete([ACCOUNT, githubAccount]);
+  kv.atomic().delete([ACCOUNT, githubAccount]).commit();
 }
 
 kv.listenQueue(async (cx) => {
