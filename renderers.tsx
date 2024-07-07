@@ -296,7 +296,7 @@ export function renderNotification(props: RenderModel) {
           <Actions>
             {needMapping.map((account) => {
               return (
-                <Button actionId="dialog_open" value={account}>
+                <Button actionId={`dialog_open_${account}`} value={account}>
                   {account}
                 </Button>
               );

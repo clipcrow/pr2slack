@@ -123,7 +123,9 @@ router.post("/action", async (context) => {
 
   if (payload.type === "block_actions") {
     const action = payload.actions[0];
-    if (action?.action_id === "dialog_open" && payload.trigger_id) {
+    if (
+      action?.action_id === `dialog_open_${action.value}` && payload.trigger_id
+    ) {
       const userAccountMap = await listAccountMapping();
       openDialog(
         slackToken,
