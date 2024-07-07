@@ -5,6 +5,7 @@ import type { KeyValueStore, WebhookContext } from "./types.ts";
 import createContext from "./createContext.ts";
 import postNotification from "./postNotification.ts";
 import openDialog from "./openDialog.ts";
+import { renderUserAccountMappingForm } from "./forms.tsx";
 
 function getHTML(markdown: string) {
   const body = render(markdown);
@@ -75,11 +76,11 @@ async function listAccountMapping() {
 function setAccountMapping(githubAccount: string, slackAccount: string) {
   kv.set([ACCOUNT, githubAccount], slackAccount);
 }
-/*
+
 function deleteAccountMapping(githubAccount: string) {
   kv.delete([ACCOUNT, githubAccount]);
 }
-*/
+
 kv.listenQueue(async (cx) => {
   if (isWebhookContext(cx)) {
     const accountMapping = await listAccountMapping();
@@ -123,17 +124,22 @@ router.post("/action", async (context) => {
 
   console.log(payload.type);
   
-  if (
-    payload.type === "block_actions" && payload.trigger_id
-  ) {
-
-    console.log(payload.actions[0]);
-
-    const userAccountMap = await listAccountMapping();
-    openDialog(slackToken, payload.trigger_id, userAccountMap);
-    context.response.status = 200;
+  if (payload.type === "block_actions" && payload.trigger_id) {
+    const action = payload.actions[0];
+    if (action?.action_id === "dialog_open") {
+      const userAccountMap = await listAccountMapping();
+      openDialog(slackToken, payload.trigger_id, userAccountMap);
+      context.response.status = 200;
+    } else if (action?.action_id === "delete_account") {
+      deleteAccountMapping(action.value);
+      const userAccountMap = await listAccountMapping();
+      context.response.body = {
+        response_action: "update",
+        view: renderUserAccountMappingForm(userAccountMap), 
+      };
+      context.response.status = 200;
+    }
   } else if (payload.type === "view_submission") {
-
     console.log(payload.view);
 
     const form = payload.view?.state?.values;
