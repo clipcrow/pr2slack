@@ -7,9 +7,10 @@ export default function (
   target: string,
   userAccountMap: KeyValueStore<string>,
   update: boolean,
+  account: string = "",
 ) {
   const client = SlackAPI(slackToken);
-  const view = renderUserAccountMappingForm(userAccountMap);
+  const view = renderUserAccountMappingForm(userAccountMap, account);
   if (update) {
     client.views.update({ view, view_id: target });
   } else {

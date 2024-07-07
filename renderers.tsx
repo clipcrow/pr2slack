@@ -17,7 +17,7 @@ import type {
   ReviewRequest,
 } from "./types.ts";
 
-type OnNeedMapping = (needs: boolean) => void;
+type OnNeedMapping = (githubAccount: string) => void;
 
 function Description(props: { text: string | null }) {
   return (props.text
@@ -32,8 +32,8 @@ function Description(props: { text: string | null }) {
 function UserLink(
   props: { login: string; slack?: string; onNeed?: OnNeedMapping },
 ) {
-  if (props.onNeed) {
-    props.onNeed(!props.slack);
+  if (props.onNeed && !props.slack) {
+    props.onNeed(props.login);
   }
   return (props.slack ? <a href={`@${props.slack}`} /> : <i>{props.login}</i>);
 }
@@ -279,17 +279,19 @@ function Repository(props: RenderModel) {
 }
 
 export function renderNotification(props: RenderModel) {
-  let needMapping = false;
-  const callback = (need: boolean) => {
-    if (need) {
-      needMapping = true;
-    }
+  const needMapping: string[] = [];
+  const callback = (githubAccount: string) => {
+    if (!needMapping.includes(githubAccount)) needMapping.push(githubAccount);
   };
   const actions = (
     <Actions>
-      <Button actionId="dialog_open" value="accountMap">
-        Account Mapping
-      </Button>
+      {needMapping.map((account) => {
+        return (
+          <Button actionId="dialog_open" value={account}>
+            {account}
+          </Button>
+        );
+      })}
     </Actions>
   );
   return JSXSlack(
@@ -300,7 +302,7 @@ export function renderNotification(props: RenderModel) {
       <Conflicts {...props} />
       <Repository {...props} />
       <Divider />
-      {needMapping ? actions : null}
+      {needMapping.length ? null : actions}
     </Blocks>,
   );
 }

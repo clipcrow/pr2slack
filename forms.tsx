@@ -83,6 +83,7 @@ export function renderRepositoryMappingForm(
 
 export function renderUserAccountMappingForm(
   userAccountMap: KeyValueStore<string>,
+  account: string = "",
 ) {
   const fields = Object.keys(userAccountMap).map((githubAccount) => {
     const slackAccount = userAccountMap[githubAccount];
@@ -110,6 +111,7 @@ export function renderUserAccountMappingForm(
         blockId="githubAccount"
         name="state"
         type="text"
+        value={account}
         required
       />
       <UsersSelect
