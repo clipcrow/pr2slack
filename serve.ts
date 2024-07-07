@@ -120,8 +120,6 @@ router.post("/webhook", async (context) => {
 router.post("/action", async (context) => {
   const formData = await context.request.body.formData();
   const payload = JSON.parse(formData.get("payload") as string);
-  
-  console.log(payload.type, [...formData.keys()]);
 
   if (payload.type === "block_actions") {
     const action = payload.actions[0];
@@ -129,12 +127,18 @@ router.post("/action", async (context) => {
       const userAccountMap = await listAccountMapping();
       openDialog(slackToken, payload.trigger_id, userAccountMap, false);
       context.response.status = 200;
+      return;
     } else if (action?.action_id === "delete_account" && payload.view.id) {
-      deleteAccountMapping(action.value);
+      const githubAccount = action.value;
+      deleteAccountMapping(githubAccount);
       const userAccountMap = await listAccountMapping();
-      delete userAccountMap[action.value]; // for non-repeatable reads of Deno.KV
+      if (userAccountMap[githubAccount]) {
+        delete userAccountMap[githubAccount];
+        console.log(`Suppressed "${githubAccount}" for non-repeatable reads`);
+      }
       openDialog(slackToken, payload.view.id, userAccountMap, true);
       context.response.status = 200;
+      return;
     }
   } else if (payload.type === "view_submission") {
     const form = payload.view?.state?.values;
@@ -144,14 +148,14 @@ router.post("/action", async (context) => {
         form.slackAccount.state.selected_user,
       );
       context.response.status = 200;
+      return;
     }
-  } else {
-    console.log(
-      `Have not reacted to "${payload.type}"`,
-      "payload.actions:",
-      payload.actions,
-    );
   }
+  console.log(
+    `Have not reacted to "${payload.type}"`,
+    "payload.actions:",
+    payload.actions,
+  );
 });
 
 const app = new Application();
