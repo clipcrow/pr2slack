@@ -78,7 +78,7 @@ function setAccountMapping(githubAccount: string, slackAccount: string) {
 }
 
 function deleteAccountMapping(githubAccount: string) {
-  kv.delete([ACCOUNT, githubAccount]);
+  kv.atomic().delete([ACCOUNT, githubAccount]);
 }
 
 kv.listenQueue(async (cx) => {
@@ -140,8 +140,6 @@ router.post("/action", async (context) => {
       context.response.status = 200;
     }
   } else if (payload.type === "view_submission") {
-    console.log(payload.view);
-
     const form = payload.view?.state?.values;
     if (form && form.githubAccount && form.slackAccount) {
       setAccountMapping(
