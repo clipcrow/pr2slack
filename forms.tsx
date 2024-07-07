@@ -1,41 +1,45 @@
 import {
-  Modal,
   Button,
   ChannelsSelect,
   Divider,
   Field,
   Input,
   JSXSlack,
+  Modal,
   Mrkdwn,
   Section,
   UsersSelect,
 } from "jsx-slack";
+import type { KeyValueStore } from "./types.ts";
 
+/*
 export type RepositoryMapping = {
-  repositoryURL: string;
+  owner: string;
+  repo: string;
   branch: string;
   slackChannel: string;
 };
+`https://github.com/${owner}/${repo}/tree/${branch}`
+*/
 
-export type UserAccountMapping = {
-  githubAccount: string;
-  slackAccount: string;
-};
-
-export function renderRepositoryMappingForm(items: RepositoryMapping[]) {
-  const fields = items.map((value) => {
+export function renderRepositoryMappingForm(
+  repositoryMap: KeyValueStore<string>,
+) {
+  const fields = Object.keys(repositoryMap).map((url) => {
+    const slackChannel = repositoryMap[url];
+    if (!slackChannel) return null;
     return (
       <Section>
         <Field>
-          <Mrkdwn>{value.repositoryURL}/tree/{value.branch}</Mrkdwn>
+          <Mrkdwn>{url}</Mrkdwn>
         </Field>
         <Field>
-          <Mrkdwn raw verbatim>{`<#${value.slackChannel}>`}</Mrkdwn>
+          <Mrkdwn raw verbatim>{`<#${slackChannel}>`}</Mrkdwn>
         </Field>
         <Button
           style="danger"
-          name="deleteMapping"
-          value={value.repositoryURL}
+          name="deleteRepository"
+          value={url}
         >
           DELETE
         </Button>
@@ -43,7 +47,7 @@ export function renderRepositoryMappingForm(items: RepositoryMapping[]) {
     );
   });
   return JSXSlack(
-    <Modal title="PR2Slack" >
+    <Modal title="PR2Slack">
       <Input
         label="GitHub Repository Owner"
         blockId="repositoryOwner"
@@ -77,18 +81,22 @@ export function renderRepositoryMappingForm(items: RepositoryMapping[]) {
   );
 }
 
-export function renderUserAccountMappingForm(items: UserAccountMapping[]) {
-  const fields = items.map((value) => {
+export function renderUserAccountMappingForm(
+  userAccountMap: KeyValueStore<string>,
+) {
+  const fields = Object.keys(userAccountMap).map((githubAccount) => {
+    const slackAccount = userAccountMap[githubAccount];
+    if (!slackAccount) return null;
     return (
       <Section>
-        <Field>{value.githubAccount}</Field>
+        <Field>{githubAccount}</Field>
         <Field>
-          <Mrkdwn raw verbatim>{`<@${value.slackAccount}>`}</Mrkdwn>
+          <Mrkdwn raw verbatim>{`<@${slackAccount}>`}</Mrkdwn>
         </Field>
         <Button
           style="danger"
-          name="deleteMapping"
-          value={value.githubAccount}
+          name="deleteUserAccount"
+          value={githubAccount}
         >
           DELETE
         </Button>
@@ -101,7 +109,6 @@ export function renderUserAccountMappingForm(items: UserAccountMapping[]) {
         label="GitHub Account"
         blockId="githubAccount"
         name="state"
-        value={undefined}
         type="text"
         required
       />
@@ -109,7 +116,6 @@ export function renderUserAccountMappingForm(items: UserAccountMapping[]) {
         label="Slack Account"
         blockId="slackAccount"
         name="state"
-        value={undefined}
         required
       />
       <Divider />

@@ -1,12 +1,10 @@
 import { Application, Router } from "oak";
 import { CSS, KATEX_CSS, render } from "gfm";
 import { load } from "std/dotenv/mod.ts";
-import type { WebhookContext } from "./types.ts";
+import type { KeyValueStore, WebhookContext } from "./types.ts";
 import createContext from "./createContext.ts";
 import postNotification from "./postNotification.ts";
 import openDialog from "./openDialog.ts";
-
-const env = await load();
 
 function getHTML(markdown: string) {
   const body = render(markdown);
@@ -38,23 +36,60 @@ async function readme() {
   return getHTML(await Deno.readTextFile("README.md"));
 }
 
+const env = await load();
+
 function getEnv(key: string): string {
-  return Deno.env.get(key) || env[key];
+  const value = Deno.env.get(key) || env[key];
+  if (value) return value;
+  throw `Env(${key}) Not Found.`;
 }
-
-function isWebhookContext(test: unknown): test is WebhookContext {
-  return test !== undefined;
-}
-
-const kv = await Deno.openKv();
 
 const githubToken = getEnv("GITHUB_TOKEN");
 const slackToken = getEnv("SLACK_TOKEN");
 const slackChannel = getEnv("SLACK_CHANNEL");
 
+function isWebhookContext(test: unknown): test is WebhookContext {
+  return ((test as WebhookContext)?.action !== undefined &&
+    typeof (test as WebhookContext).action === "string") &&
+    ((test as WebhookContext)?.event !== undefined &&
+      typeof (test as WebhookContext).event === "string") &&
+    ((test as WebhookContext)?.number !== undefined &&
+      typeof (test as WebhookContext).number === "number") &&
+    ((test as WebhookContext)?.baseRef !== undefined &&
+      typeof (test as WebhookContext).baseRef === "string");
+}
+
+const kv = await Deno.openKv();
+
+const ACCOUNT = "account";
+
+async function listAccountMapping() {
+  const entries = kv.list<string>({ prefix: [ACCOUNT] });
+  const result: KeyValueStore<string> = {};
+  for await (const entry of entries) {
+    result[entry.key[1] as string] = entry.value;
+  }
+  return result;
+}
+/*
+function setAccountMapping(githubAccount: string, slackAccount: string) {
+  kv.set([ACCOUNT, githubAccount], slackAccount);
+}
+
+function deleteAccountMapping(githubAccount: string) {
+  kv.delete([ACCOUNT, githubAccount]);
+}
+*/
 kv.listenQueue(async (cx) => {
   if (isWebhookContext(cx)) {
-    await postNotification(githubToken, slackToken, slackChannel, {}, cx);
+    const accountMapping = await listAccountMapping();
+    await postNotification(
+      githubToken,
+      slackToken,
+      slackChannel,
+      accountMapping,
+      cx,
+    );
   }
 });
 
@@ -67,10 +102,10 @@ router.get("/", async (context) => {
 router.get("/env", (context) => {
   context.response.body = getHTML(
     `- GITHUB_TOKEN: ${githubToken.slice(0, 8)}...${githubToken.slice(-8)}\n` +
-    `- SLACK_TOKEN: ${slackToken.slice(0, 8)}...${slackToken.slice(-8)}\n` + 
-    `- SLACK_CHANNEL: ${slackChannel}`,
+      `- SLACK_TOKEN: ${slackToken.slice(0, 8)}...${slackToken.slice(-8)}\n` +
+      `- SLACK_CHANNEL: ${slackChannel}`,
   );
-})
+});
 
 router.post("/webhook", async (context) => {
   if (context.request.hasBody) {
@@ -85,17 +120,15 @@ router.post("/webhook", async (context) => {
 router.post("/action", async (context) => {
   const formData = await context.request.body.formData();
   const payload = JSON.parse(formData.get("payload") as string);
-  
+
   if (payload.type === "block_actions" && payload.trigger_id) {
-    
-    //KVから読み出し
     payload.message = undefined;
     console.log(payload);
 
-    openDialog(slackToken, payload.trigger_id, []);
+    const userAccountMap = await listAccountMapping();
+    openDialog(slackToken, payload.trigger_id, userAccountMap);
     context.response.status = 200;
   } else if (payload.type === "view_submission") {
-    
     // KVに保存
     console.log(payload.view);
     payload.view = undefined;

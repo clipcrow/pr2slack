@@ -1,5 +1,5 @@
 import {
-Actions,
+  Actions,
   Blocks,
   Button,
   Context,
@@ -29,7 +29,9 @@ function Description(props: { text: string | null }) {
     : null);
 }
 
-function UserLink(props: { login: string; slack?: string; onNeed?: OnNeedMapping }) {
+function UserLink(
+  props: { login: string; slack?: string; onNeed?: OnNeedMapping },
+) {
   if (props.onNeed) {
     props.onNeed(!props.slack);
   }
@@ -55,7 +57,7 @@ function Reviewers(
     userAccountMap: KeyValueStore<string>;
     reviewers: string[];
     text: string;
-    onNeed: OnNeedMapping
+    onNeed: OnNeedMapping;
   },
 ) {
   const count = props.reviewers.length;
@@ -68,7 +70,11 @@ function Reviewers(
       {props.reviewers.map((login) => {
         return (
           <span>
-            <UserLink login={login} slack={props.userAccountMap[login]} onNeed={props.onNeed}/>
+            <UserLink
+              login={login}
+              slack={props.userAccountMap[login]}
+              onNeed={props.onNeed}
+            />
           </span>
         );
       })}
@@ -144,7 +150,11 @@ function Commits(props: RenderModel & { onNeed: OnNeedMapping }) {
     <Context>
       <span>
         [<b>{state}</b>]{" "}
-        <UserLink login={login} slack={props.userAccountMap[login]} onNeed={props.onNeed} />
+        <UserLink
+          login={login}
+          slack={props.userAccountMap[login]}
+          onNeed={props.onNeed}
+        />
         {` ${text} ${totalCount} ${commitUnit} (${changedFiles} file ${changeUnit}) into `}
         <BranchLink url={url} ref={base} /> from{" "}
         <BranchLink url={url} ref={head} static={merged} />
@@ -274,11 +284,13 @@ export function renderNotification(props: RenderModel) {
     if (need) {
       needMapping = true;
     }
-  }
+  };
   const actions = (
     <Actions>
-      <Button actionId="dialog_open" value="account_mapping">Account Mapping</Button>
-    </Actions> 
+      <Button actionId="dialog_open" value="account_mapping">
+        Account Mapping
+      </Button>
+    </Actions>
   );
   return JSXSlack(
     <Blocks>
@@ -288,7 +300,7 @@ export function renderNotification(props: RenderModel) {
       <Conflicts {...props} />
       <Repository {...props} />
       <Divider />
-      {needMapping ? actions : null}  
+      {needMapping ? actions : null}
     </Blocks>,
   );
 }
