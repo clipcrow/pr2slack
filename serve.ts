@@ -121,15 +121,22 @@ router.post("/action", async (context) => {
   const formData = await context.request.body.formData();
   const payload = JSON.parse(formData.get("payload") as string);
 
+  console.log(payload.type);
+  
   if (
     payload.type === "block_actions" && payload.trigger_id
   ) {
+
+    payload.message = undefined;
+    console.log(payload);
+
     const userAccountMap = await listAccountMapping();
     openDialog(slackToken, payload.trigger_id, userAccountMap);
     context.response.status = 200;
   } else if (payload.type === "view_submission") {
-    // KVに保存
+
     console.log(payload.view);
+
     const form = payload.view?.state?.values;
     if (form && form.githubAccount && form.slackAccount) {
       setAccountMapping(
