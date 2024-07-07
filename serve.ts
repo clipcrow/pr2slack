@@ -120,6 +120,8 @@ router.post("/webhook", async (context) => {
 router.post("/action", async (context) => {
   const formData = await context.request.body.formData();
   const payload = JSON.parse(formData.get("payload") as string);
+  
+  console.log(payload.type, [...formData.keys()]);
 
   if (payload.type === "block_actions") {
     const action = payload.actions[0];
@@ -130,8 +132,7 @@ router.post("/action", async (context) => {
     } else if (action?.action_id === "delete_account" && payload.view.id) {
       deleteAccountMapping(action.value);
       const userAccountMap = await listAccountMapping();
-      // Deno.KVの楽観ロック対応
-      delete userAccountMap[action.value];
+      delete userAccountMap[action.value]; // for non-repeatable reads of Deno.KV
       openDialog(slackToken, payload.view.id, userAccountMap, true);
       context.response.status = 200;
     }
@@ -142,8 +143,8 @@ router.post("/action", async (context) => {
         form.githubAccount.state.value,
         form.slackAccount.state.selected_user,
       );
+      context.response.status = 200;
     }
-    context.response.status = 200;
   } else {
     console.log(
       `Have not reacted to "${payload.type}"`,
