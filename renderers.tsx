@@ -293,15 +293,19 @@ export function renderNotification(props: RenderModel) {
       <Divider />
       {needMapping.length > 0
         ? (
-          <Actions>
-            {needMapping.map((account) => {
-              return (
-                <Button actionId={`dialog_open_${account}`} value={account}>
-                  {account}
-                </Button>
-              );
-            })}
-          </Actions>
+          <Fragment>
+            <Context>Link a Slack account</Context>
+            <Actions>
+              {needMapping.map((account) => {
+                return (
+                  <Button actionId={`dialog_open_${account}`} value={account}>
+                    {account}
+                  </Button>
+                );
+              })}
+            </Actions>
+            <Divider />
+          </Fragment>
         )
         : null}
     </Blocks>,
