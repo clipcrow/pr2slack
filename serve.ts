@@ -71,11 +71,11 @@ async function listAccountMapping() {
   }
   return result;
 }
-/*
+
 function setAccountMapping(githubAccount: string, slackAccount: string) {
   kv.set([ACCOUNT, githubAccount], slackAccount);
 }
-
+/*
 function deleteAccountMapping(githubAccount: string) {
   kv.delete([ACCOUNT, githubAccount]);
 }
@@ -121,21 +121,30 @@ router.post("/action", async (context) => {
   const formData = await context.request.body.formData();
   const payload = JSON.parse(formData.get("payload") as string);
 
-  if (payload.type === "block_actions" && payload.trigger_id) {
-    payload.message = undefined;
-    console.log(payload);
-
+  if (
+    payload.type === "block_actions" && payload.trigger_id &&
+    payload.view?.actions[0]?.action_id === "dialog_open"
+  ) {
     const userAccountMap = await listAccountMapping();
     openDialog(slackToken, payload.trigger_id, userAccountMap);
     context.response.status = 200;
   } else if (payload.type === "view_submission") {
     // KVに保存
     console.log(payload.view);
-    payload.view = undefined;
-    console.log(payload);
-
+    const form = payload.view?.state?.values;
+    if (form && form.githubAccount && form.slackAccount) {
+      setAccountMapping(
+        form.githubAccount.state.value,
+        form.slackAccount.state.selected_user,
+      );
+    }
     context.response.body = { response_action: "clear" };
     context.response.status = 200;
+  } else {
+    console.log(
+      `Have not reacted to "${payload.type}"`,
+      `payload.actions: ${payload.actions}`,
+    );
   }
 });
 

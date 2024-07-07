@@ -287,7 +287,7 @@ export function renderNotification(props: RenderModel) {
   };
   const actions = (
     <Actions>
-      <Button actionId="dialog_open" value="account_mapping">
+      <Button actionId="dialog_open" value="accountMap">
         Account Mapping
       </Button>
     </Actions>
