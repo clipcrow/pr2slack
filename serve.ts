@@ -77,7 +77,7 @@ function setAccountMapping(githubAccount: string, slackAccount: string) {
 }
 
 function deleteAccountMapping(githubAccount: string) {
-  kv.atomic().delete([ACCOUNT, githubAccount]).commit();
+  kv.delete([ACCOUNT, githubAccount]);
 }
 
 kv.listenQueue(async (cx) => {
@@ -121,18 +121,18 @@ router.post("/action", async (context) => {
   const formData = await context.request.body.formData();
   const payload = JSON.parse(formData.get("payload") as string);
 
-  console.log(payload.type);
-
-  if (payload.type === "block_actions" && payload.trigger_id) {
+  if (payload.type === "block_actions") {
     const action = payload.actions[0];
-    if (action?.action_id === "dialog_open") {
+    if (action?.action_id === "dialog_open" && payload.trigger_id) {
       const userAccountMap = await listAccountMapping();
       openDialog(slackToken, payload.trigger_id, userAccountMap, false);
       context.response.status = 200;
-    } else if (action?.action_id === "delete_account") {
+    } else if (action?.action_id === "delete_account" && payload.view.id) {
       deleteAccountMapping(action.value);
-      //const userAccountMap = await listAccountMapping();
-      openDialog(slackToken, payload.view.id, { kurihara: "test" }, true);
+      const userAccountMap = await listAccountMapping();
+      // Deno.KVの楽観ロック対応
+      delete userAccountMap[action.value];
+      openDialog(slackToken, payload.view.id, userAccountMap, true);
       context.response.status = 200;
     }
   } else if (payload.type === "view_submission") {
