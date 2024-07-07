@@ -5,7 +5,6 @@ import type { KeyValueStore, WebhookContext } from "./types.ts";
 import createContext from "./createContext.ts";
 import postNotification from "./postNotification.ts";
 import openDialog from "./openDialog.ts";
-import { renderUserAccountMappingForm } from "./forms.tsx";
 
 function getHTML(markdown: string) {
   const body = render(markdown);
@@ -132,10 +131,8 @@ router.post("/action", async (context) => {
       context.response.status = 200;
     } else if (action?.action_id === "delete_account") {
       deleteAccountMapping(action.value);
-      const userAccountMap = await listAccountMapping();
       context.response.body = {
-        response_action: "update",
-        view: renderUserAccountMappingForm({ ...userAccountMap, "aida-gnk": "U7Y91QNGM" }), 
+        response_action: "clear",
       };
       context.response.status = 200;
     }
