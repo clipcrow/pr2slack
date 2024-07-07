@@ -122,8 +122,7 @@ router.post("/action", async (context) => {
   const payload = JSON.parse(formData.get("payload") as string);
 
   if (
-    payload.type === "block_actions" && payload.trigger_id &&
-    payload.view?.actions[0]?.action_id === "dialog_open"
+    payload.type === "block_actions" && payload.trigger_id
   ) {
     const userAccountMap = await listAccountMapping();
     openDialog(slackToken, payload.trigger_id, userAccountMap);
@@ -143,7 +142,8 @@ router.post("/action", async (context) => {
   } else {
     console.log(
       `Have not reacted to "${payload.type}"`,
-      `payload.actions: ${payload.actions}`,
+      "payload.actions:",
+      payload.actions,
     );
   }
 });
