@@ -166,6 +166,21 @@ router.post("/action", async (context) => {
   );
 });
 
+router.post("/actionmap", async (context) => {
+  const formData = await context.request.body.formData();
+  const trigger_id = formData.get("trigger_id") as string;
+  const userAccountMap = await listAccountMapping();
+  if (trigger_id) {
+    openDialog(
+      slackToken,
+      trigger_id,
+      userAccountMap,
+      false,
+    );
+    context.response.status = 200;
+  }
+});
+
 const app = new Application();
 
 app.use(router.routes());

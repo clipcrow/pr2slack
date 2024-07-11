@@ -3,7 +3,7 @@ import getActualGraph from "./getActualGraph.ts";
 import { renderActionLog, renderNotification } from "./renderers.tsx";
 import type { KeyValueStore, WebhookContext } from "./types.ts";
 
-const EVENT_TYPE = "PR2SLACK";
+const EVENT_TYPE = "PullRequest-Handler"; // Backward compatible
 
 type SlackMessage = {
   metadata: {
