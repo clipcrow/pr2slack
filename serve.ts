@@ -166,7 +166,7 @@ router.post("/action", async (context) => {
   );
 });
 
-router.post("/actionmap", async (context) => {
+router.post("/accountmap", async (context) => {
   const formData = await context.request.body.formData();
   const trigger_id = formData.get("trigger_id") as string;
   const userAccountMap = await listAccountMapping();
