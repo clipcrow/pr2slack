@@ -138,7 +138,7 @@ router.post("/action", async (context) => {
       return;
     }
     if (action?.action_id === "delete_account" && payload.view.id) {
-      const githubAccount = action.value;
+      const githubAccount: string = action.value;
       deleteAccountMapping(githubAccount);
       const userAccountMap = await listAccountMapping();
       if (userAccountMap[githubAccount]) {
@@ -156,17 +156,16 @@ router.post("/action", async (context) => {
   }
 
   if (payload.type === "view_submission") {
-    const form = payload.view?.state?.values;
-    if (form && form.slackAccount) {
-      const meta = JSON.parse(payload.view.private_metadata);
-      if (meta?.githubAccount) {
-        setAccountMapping(
-          meta.githubAccount,
-          form.slackAccount.state.selected_user,
-        );
-        context.response.status = 200;
-        return;
-      }
+    const slackAccount = payload.view?.state?.values?.slackAccount;
+    if (slackAccount) {
+      const githubAccount = payload.view?.state?.values?.githubAccount;
+      const meta = JSON.parse(payload.view.private_metadata || "{}");
+      setAccountMapping(
+        githubAccount?.state?.value || meta.githubAccount,
+        slackAccount.state.selected_user,
+      );
+      context.response.status = 200;
+      return;
     }
   }
 
@@ -180,8 +179,8 @@ router.post("/action", async (context) => {
 router.post("/accountmap", async (context) => {
   const formData = await context.request.body.formData();
   const trigger_id = formData.get("trigger_id") as string;
-  const userAccountMap = await listAccountMapping();
   if (trigger_id) {
+    const userAccountMap = await listAccountMapping();
     openUserAccountMappingDialog(
       slackToken,
       trigger_id,
