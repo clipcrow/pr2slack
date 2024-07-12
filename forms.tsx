@@ -106,7 +106,7 @@ export function renderRepositoryMappingForm(
     <Modal title="Link Slack channel">
       <Input
         label="GitHub Repository Owner"
-        blockId="repositoryOwner"
+        blockId="owner"
         name="state"
         type="text"
         placeholder="Write an owner name"
@@ -114,7 +114,7 @@ export function renderRepositoryMappingForm(
       />
       <Input
         label="GitHub Repository Name"
-        blockId="repositoryName"
+        blockId="repo"
         name="state"
         type="text"
         placeholder="Write a repository name"
