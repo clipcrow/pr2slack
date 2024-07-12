@@ -2,6 +2,7 @@ import { SlackAPI } from "slack";
 import {
   renderUserAccountMappingForm,
   renderUserAccountSettingForm,
+  renderRepositoryMappingForm,
 } from "./forms.tsx";
 import type { KeyValueStore } from "./types.ts";
 
@@ -33,4 +34,24 @@ export function openUserAccountSettingDialog(
   const client = SlackAPI(slackToken);
   const view = renderUserAccountSettingForm(account);
   client.views.open({ view, trigger_id: target });
+}
+
+export function openRepositoryMappingDialog(
+  slackToken: string,
+  target: string,
+  repositoryMap: KeyValueStore<string>,
+) {
+  const client = SlackAPI(slackToken);
+  const view = renderRepositoryMappingForm(repositoryMap);
+  client.views.open({ view, trigger_id: target });
+}
+
+export function updateRepositoryMappingDialog(
+  slackToken: string,
+  target: string,
+  repositoryMap: KeyValueStore<string>,
+) {
+  const client = SlackAPI(slackToken);
+  const view = renderRepositoryMappingForm(repositoryMap);
+  client.views.update({ view, view_id: target });
 }

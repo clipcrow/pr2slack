@@ -12,75 +12,6 @@ import {
 } from "jsx-slack";
 import type { KeyValueStore } from "./types.ts";
 
-/*
-export type RepositoryMapping = {
-  owner: string;
-  repo: string;
-  branch: string;
-  slackChannel: string;
-};
-`https://github.com/${owner}/${repo}/tree/${branch}`
-*/
-
-export function renderRepositoryMappingForm(
-  repositoryMap: KeyValueStore<string>,
-) {
-  const fields = Object.keys(repositoryMap).map((url) => {
-    const slackChannel = repositoryMap[url];
-    if (!slackChannel) return null;
-    return (
-      <Section>
-        <Field>
-          <Mrkdwn>{url}</Mrkdwn>
-        </Field>
-        <Field>
-          <Mrkdwn raw verbatim>{`<#${slackChannel}>`}</Mrkdwn>
-        </Field>
-        <Button
-          style="danger"
-          name="delete_repository"
-          value={url}
-        >
-          DELETE
-        </Button>
-      </Section>
-    );
-  });
-  return JSXSlack(
-    <Modal title="Specify Slack channel">
-      <Input
-        label="GitHub Repository Owner"
-        blockId="repositoryOwner"
-        name="state"
-        type="text"
-        required
-      />
-      <Input
-        label="GitHub Repository Name"
-        blockId="repositoryName"
-        name="state"
-        type="text"
-        required
-      />
-      <Input
-        label="Monitored BRANCH"
-        blockId="branch"
-        name="state"
-        type="text"
-        required
-      />
-      <ChannelsSelect
-        label="Channel for notifying pull-requests"
-        blockId="slackChannel"
-        name="state"
-        required
-      />
-      <Divider />
-      {fields}
-    </Modal>,
-  );
-}
-
 export function renderUserAccountMappingForm(
   userAccountMap: KeyValueStore<string>,
   account: string = "",
@@ -143,6 +74,65 @@ export function renderUserAccountSettingForm(account: string) {
         placeholder="Select a Slack account"
         required
       />
+    </Modal>,
+  );
+}
+
+export function renderRepositoryMappingForm(
+  repositoryMap: KeyValueStore<string>,
+) {
+  const fields = Object.keys(repositoryMap).map((url) => {
+    const slackChannel = repositoryMap[url];
+    if (!slackChannel) return null;
+    return (
+      <Section>
+        <Field>
+          <Mrkdwn>{url}</Mrkdwn>
+        </Field>
+        <Field>
+          <Mrkdwn raw verbatim>{`<#${slackChannel}>`}</Mrkdwn>
+        </Field>
+        <Button
+          style="danger"
+          name="delete_repository"
+          value={url}
+        >
+          DELETE
+        </Button>
+      </Section>
+    );
+  });
+  return JSXSlack(
+    <Modal title="Specify Slack channel">
+      <Input
+        label="GitHub Repository Owner"
+        blockId="repositoryOwner"
+        name="state"
+        type="text"
+        required
+      />
+      <Input
+        label="GitHub Repository Name"
+        blockId="repositoryName"
+        name="state"
+        type="text"
+        required
+      />
+      <Input
+        label="Monitored BRANCH"
+        blockId="branch"
+        name="state"
+        type="text"
+        required
+      />
+      <ChannelsSelect
+        label="Channel for notifying pull-requests"
+        blockId="slackChannel"
+        name="state"
+        required
+      />
+      <Divider />
+      {fields}
     </Modal>,
   );
 }

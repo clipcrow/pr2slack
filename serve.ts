@@ -8,6 +8,8 @@ import {
   openUserAccountMappingDialog,
   openUserAccountSettingDialog,
   updateUserAccountMappingDialog,
+  openRepositoryMappingDialog,
+  updateRepositoryMappingDialog,
 } from "./openDialog.ts";
 
 function getHTML(markdown: string) {
@@ -66,6 +68,7 @@ function isWebhookContext(test: unknown): test is WebhookContext {
 const kv = await Deno.openKv();
 
 const ACCOUNT = "account";
+const REPOSITORY = "repository";
 
 async function listAccountMapping() {
   const entries = kv.list<string>({ prefix: [ACCOUNT] });
@@ -82,6 +85,23 @@ function setAccountMapping(githubAccount: string, slackAccount: string) {
 
 function deleteAccountMapping(githubAccount: string) {
   kv.delete([ACCOUNT, githubAccount]);
+}
+
+async function listRepositoryMapping() {
+  const entries = kv.list<string>({ prefix: [REPOSITORY] });
+  const result: KeyValueStore<string> = {};
+  for await (const entry of entries) {
+    result[entry.key[1] as string] = entry.value;
+  }
+  return result;
+}
+
+function setRepositoryMapping(url: string, slackChannel: string) {
+  kv.set([REPOSITORY, url], slackChannel);
+}
+
+function deleteRepositoryMapping(url: string) {
+  kv.delete([REPOSITORY, url]);
 }
 
 kv.listenQueue(async (cx) => {
@@ -153,19 +173,51 @@ router.post("/action", async (context) => {
       context.response.status = 200;
       return;
     }
+    if (action?.action_id === "delete_repository" && payload.view.id) {
+      const url: string = action.value;
+      deleteRepositoryMapping(url);
+      const repositoryMap = await listRepositoryMapping();
+      if (repositoryMap[url]) {
+        // Suppress non-repeatable read
+        delete repositoryMap[url];
+      }
+      updateRepositoryMappingDialog(
+        slackToken,
+        payload.view.id,
+        repositoryMap,
+      );
+      context.response.status = 200;
+      return;
+    }
   }
-
+ 
   if (payload.type === "view_submission") {
     const slackAccount = payload.view?.state?.values?.slackAccount;
     if (slackAccount) {
       const githubAccount = payload.view?.state?.values?.githubAccount;
       const meta = JSON.parse(payload.view.private_metadata || "{}");
-      setAccountMapping(
-        githubAccount?.state?.value || meta.githubAccount,
-        slackAccount.state.selected_user,
-      );
-      context.response.status = 200;
-      return;
+      const value = githubAccount?.state?.value || meta.githubAccount;
+      if (value) {
+        setAccountMapping(
+          value,
+          slackAccount.state.selected_user,
+        );
+        context.response.status = 200;
+        return;
+      }
+    }
+
+    const slackChannel = payload.view?.state?.values?.slackChannel;
+    if (slackChannel) {
+      const { owner, repo, branch } = payload.view?.state?.values;
+      if (owner && repo && branch) {
+        setRepositoryMapping(
+          `https://github.com/${owner.state.value}/${repo.state.value}/tree/${branch.state.value}`,
+          slackChannel.state.selected_channel,
+        );
+        context.response.status = 200;
+        return;
+      }
     }
   }
 
@@ -185,6 +237,20 @@ router.post("/accountmap", async (context) => {
       slackToken,
       trigger_id,
       userAccountMap,
+    );
+    context.response.status = 200;
+  }
+});
+
+router.post("/repositorymap", async (context) => {
+  const formData = await context.request.body.formData();
+  const trigger_id = formData.get("trigger_id") as string;
+  if (trigger_id) {
+    const repositoryMap = await listRepositoryMapping();
+    openRepositoryMappingDialog(
+      slackToken,
+      trigger_id,
+      repositoryMap,
     );
     context.response.status = 200;
   }
