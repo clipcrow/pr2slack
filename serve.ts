@@ -207,6 +207,7 @@ router.post("/action", async (context) => {
       }
     }
 
+    delete payload.view.blocks;
     console.log(payload.view)
 
     const slackChannel = payload.view?.state?.values?.slackChannel;
