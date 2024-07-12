@@ -207,6 +207,8 @@ router.post("/action", async (context) => {
       }
     }
 
+    console.log(payload.view)
+
     const slackChannel = payload.view?.state?.values?.slackChannel;
     if (slackChannel) {
       const { owner, repo, branch } = payload.view?.state?.values;
