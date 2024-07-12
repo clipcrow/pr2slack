@@ -84,9 +84,9 @@ Holds tokens for operating GitHubtoo.
     - `groups:history`
     - `im:history`
     - `mpim:history`
--  Slash command
-   - scope
-     - `commands` 
+- Slash command
+  - scope
+    - `commands`
 
 ### .env file
 

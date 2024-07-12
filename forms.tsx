@@ -112,12 +112,14 @@ export function renderUserAccountMappingForm(
         name="state"
         type="text"
         value={account}
+        placeholder="Write a GitHub user-name"
         required
       />
       <UsersSelect
         label="Slack Account"
         blockId="slackAccount"
         name="state"
+        placeholder="Select a Slack account"
         required
       />
       <Divider />
@@ -138,6 +140,7 @@ export function renderUserAccountSettingForm(account: string) {
         label="Slack Account"
         blockId="slackAccount"
         name="state"
+        placeholder="Select a Slack account"
         required
       />
     </Modal>,

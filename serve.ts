@@ -4,7 +4,11 @@ import { load } from "std/dotenv/mod.ts";
 import type { KeyValueStore, WebhookContext } from "./types.ts";
 import createContext from "./createContext.ts";
 import postNotification from "./postNotification.ts";
-import { openUserAccountMappingDialog, openUserAccountSettingDialog } from "./openDialog.ts";
+import {
+  openUserAccountMappingDialog,
+  openUserAccountSettingDialog,
+  updateUserAccountMappingDialog,
+} from "./openDialog.ts";
 
 function getHTML(markdown: string) {
   const body = render(markdown);
@@ -132,19 +136,26 @@ router.post("/action", async (context) => {
       );
       context.response.status = 200;
       return;
-    } else if (action?.action_id === "delete_account" && payload.view.id) {
+    }
+    if (action?.action_id === "delete_account" && payload.view.id) {
       const githubAccount = action.value;
       deleteAccountMapping(githubAccount);
       const userAccountMap = await listAccountMapping();
       if (userAccountMap[githubAccount]) {
+        // Suppress non-repeatable read
         delete userAccountMap[githubAccount];
-        console.log(`Suppressed "${githubAccount}" for non-repeatable reads`);
       }
-      openUserAccountMappingDialog(slackToken, payload.view.id, userAccountMap, true);
+      updateUserAccountMappingDialog(
+        slackToken,
+        payload.view.id,
+        userAccountMap,
+      );
       context.response.status = 200;
       return;
     }
-  } else if (payload.type === "view_submission") {
+  }
+
+  if (payload.type === "view_submission") {
     const form = payload.view?.state?.values;
     if (form && form.slackAccount) {
       const meta = JSON.parse(payload.view.private_metadata);
@@ -158,6 +169,7 @@ router.post("/action", async (context) => {
       }
     }
   }
+
   console.log(
     `Have not reacted to "${payload.type}"`,
     "payload.actions:",
@@ -174,7 +186,6 @@ router.post("/accountmap", async (context) => {
       slackToken,
       trigger_id,
       userAccountMap,
-      false,
     );
     context.response.status = 200;
   }
