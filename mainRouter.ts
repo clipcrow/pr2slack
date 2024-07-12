@@ -7,7 +7,7 @@ const kv = await Deno.openKv();
 
 kv.listenQueue(async (payload) => {
   const { cx, githubToken, slackToken } = payload;
-  if (cx?.repository?.url && cx.baseRef) {
+  if (cx?.repository?.url && cx.baseRef && githubToken && slackToken) {
     const repositoryMap = await listRepositoryMapping();
     const url = `${cx.repository.url}/tree/${cx.baseRef}`;
     const slackChannel = repositoryMap[url];
