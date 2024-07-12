@@ -146,16 +146,16 @@ router.post("/action", async (context) => {
     }
   } else if (payload.type === "view_submission") {
     const form = payload.view?.state?.values;
-    
-    console.log(payload.view);
-    
-    if (form && form.githubAccount && form.slackAccount) {
-      setAccountMapping(
-        form.githubAccount.state.value,
-        form.slackAccount.state.selected_user,
-      );
-      context.response.status = 200;
-      return;
+    if (form && form.slackAccount) {
+      const meta = JSON.parse(payload.view.private_metadata);
+      if (meta?.githubAccount) {
+        setAccountMapping(
+          meta.githubAccount,
+          form.slackAccount.state.selected_user,
+        );
+        context.response.status = 200;
+        return;
+      }
     }
   }
   console.log(
