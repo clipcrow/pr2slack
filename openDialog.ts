@@ -1,8 +1,8 @@
 import { SlackAPI } from "slack";
 import {
+  renderRepositoryMappingForm,
   renderUserAccountMappingForm,
   renderUserAccountSettingForm,
-  renderRepositoryMappingForm,
 } from "./forms.tsx";
 import type { KeyValueStore } from "./types.ts";
 

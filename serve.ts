@@ -5,11 +5,11 @@ import type { KeyValueStore, WebhookContext } from "./types.ts";
 import createContext from "./createContext.ts";
 import postNotification from "./postNotification.ts";
 import {
+  openRepositoryMappingDialog,
   openUserAccountMappingDialog,
   openUserAccountSettingDialog,
-  updateUserAccountMappingDialog,
-  openRepositoryMappingDialog,
   updateRepositoryMappingDialog,
+  updateUserAccountMappingDialog,
 } from "./openDialog.ts";
 
 function getHTML(markdown: string) {
@@ -52,7 +52,6 @@ function getEnv(key: string): string {
 
 const githubToken = getEnv("GITHUB_TOKEN");
 const slackToken = getEnv("SLACK_TOKEN");
-const slackChannel = getEnv("SLACK_CHANNEL");
 
 function isWebhookContext(test: unknown): test is WebhookContext {
   return ((test as WebhookContext)?.action !== undefined &&
@@ -106,14 +105,18 @@ function deleteRepositoryMapping(url: string) {
 
 kv.listenQueue(async (cx) => {
   if (isWebhookContext(cx)) {
-    const accountMapping = await listAccountMapping();
-    await postNotification(
-      githubToken,
-      slackToken,
-      slackChannel,
-      accountMapping,
-      cx,
-    );
+    const repositoryMap = await listRepositoryMapping();
+    const slackChannel =
+      repositoryMap[`${cx.repository.url}/tree/${cx.baseRef}`];
+    if (slackChannel) {
+      await postNotification(
+        githubToken,
+        slackToken,
+        slackChannel,
+        await listAccountMapping(),
+        cx,
+      );
+    }
   }
 });
 
@@ -126,8 +129,7 @@ router.get("/", async (context) => {
 router.get("/env", (context) => {
   context.response.body = getHTML(
     `- GITHUB_TOKEN: ${githubToken.slice(0, 8)}...${githubToken.slice(-8)}\n` +
-      `- SLACK_TOKEN: ${slackToken.slice(0, 8)}...${slackToken.slice(-8)}\n` +
-      `- SLACK_CHANNEL: ${slackChannel}`,
+      `- SLACK_TOKEN: ${slackToken.slice(0, 8)}...${slackToken.slice(-8)}\n`,
   );
 });
 
@@ -190,7 +192,7 @@ router.post("/action", async (context) => {
       return;
     }
   }
- 
+
   if (payload.type === "view_submission") {
     const slackAccount = payload.view?.state?.values?.slackAccount;
     if (slackAccount) {
@@ -206,9 +208,6 @@ router.post("/action", async (context) => {
         return;
       }
     }
-
-    delete payload.view.blocks;
-    console.log(payload.view)
 
     const slackChannel = payload.view?.state?.values?.slackChannel;
     if (slackChannel) {
