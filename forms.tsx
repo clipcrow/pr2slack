@@ -133,7 +133,7 @@ export function renderUserAccountSettingForm(account: string) {
         <b>GitHub Account</b>
         <pre>{account}</pre>
       </Section>
-      <input name="githubAccount" type="hidden" value={account} />
+      {/*<input name="githubAccount" type="hidden" value={account} />*/}
       <UsersSelect
         label="Slack Account"
         blockId="slackAccount"
