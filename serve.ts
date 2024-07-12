@@ -4,7 +4,7 @@ import { load } from "std/dotenv/mod.ts";
 import type { KeyValueStore, WebhookContext } from "./types.ts";
 import createContext from "./createContext.ts";
 import postNotification from "./postNotification.ts";
-import openDialog from "./openDialog.ts";
+import { openUserAccountMappingDialog, openUserAccountSettingDialog } from "./openDialog.ts";
 
 function getHTML(markdown: string) {
   const body = render(markdown);
@@ -123,15 +123,11 @@ router.post("/action", async (context) => {
 
   if (payload.type === "block_actions") {
     const action = payload.actions[0];
-    if (
-      action?.action_id === `dialog_open_${action.value}` && payload.trigger_id
-    ) {
-      const userAccountMap = await listAccountMapping();
-      openDialog(
+    const id = `dialog_open_${action.value}`;
+    if (action?.action_id === id && payload.trigger_id) {
+      openUserAccountSettingDialog(
         slackToken,
         payload.trigger_id,
-        userAccountMap,
-        false,
         action.value,
       );
       context.response.status = 200;
@@ -144,7 +140,7 @@ router.post("/action", async (context) => {
         delete userAccountMap[githubAccount];
         console.log(`Suppressed "${githubAccount}" for non-repeatable reads`);
       }
-      openDialog(slackToken, payload.view.id, userAccountMap, true);
+      openUserAccountMappingDialog(slackToken, payload.view.id, userAccountMap, true);
       context.response.status = 200;
       return;
     }
@@ -171,7 +167,7 @@ router.post("/accountmap", async (context) => {
   const trigger_id = formData.get("trigger_id") as string;
   const userAccountMap = await listAccountMapping();
   if (trigger_id) {
-    openDialog(
+    openUserAccountMappingDialog(
       slackToken,
       trigger_id,
       userAccountMap,

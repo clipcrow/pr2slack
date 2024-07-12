@@ -125,3 +125,21 @@ export function renderUserAccountMappingForm(
     </Modal>,
   );
 }
+
+export function renderUserAccountSettingForm(account: string) {
+  return JSXSlack(
+    <Modal title="Link a Slack account">
+      <Section>
+        <b>GitHub Account</b>
+        <pre>{account}</pre>
+      </Section>
+      <input name="githubAccount" type="hidden" value={account} />
+      <UsersSelect
+        label="Slack Account"
+        blockId="slackAccount"
+        name="state"
+        required
+      />
+    </Modal>,
+  );
+}

@@ -1,8 +1,8 @@
 import { SlackAPI } from "slack";
-import { renderUserAccountMappingForm } from "./forms.tsx";
+import { renderUserAccountMappingForm, renderUserAccountSettingForm } from "./forms.tsx";
 import type { KeyValueStore } from "./types.ts";
 
-export default function (
+export function openUserAccountMappingDialog (
   slackToken: string,
   target: string,
   userAccountMap: KeyValueStore<string>,
@@ -16,4 +16,14 @@ export default function (
   } else {
     client.views.open({ view, trigger_id: target });
   }
+}
+
+export function openUserAccountSettingDialog (
+  slackToken: string,
+  target: string,
+  account: string,
+) {
+  const client = SlackAPI(slackToken);
+  const view = renderUserAccountSettingForm(account);
+  client.views.open({ view, trigger_id: target });
 }
