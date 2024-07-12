@@ -88,12 +88,7 @@ Holds tokens for operating GitHubtoo.
   - scope
     - `commands`
 
-### .env file
+### Deno Deploy env
 
-The .env file is needed when running tests locally.
-
-```yml
-githubToken=ghp_abcdefghijklmnopqrstuvwxyz0123456789
-slackToken=xoxb-1234567890123-1234567890123-abcdefghijklmnopqrstuvwx
-slackChannel=C0123456789
-```
+- GITHUB_TOKEN: ghp_abcdefghijklmnopqrstuvwxyz0123456789
+- SLACK_TOKEN: xoxb-1234567890123-1234567890123-abcdefghijklmnopqrstuvwx
