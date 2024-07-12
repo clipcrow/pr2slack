@@ -147,7 +147,7 @@ router.post("/action", async (context) => {
   } else if (payload.type === "view_submission") {
     const form = payload.view?.state?.values;
     
-    console.log(payload.view.state);
+    console.log(payload.view);
     
     if (form && form.githubAccount && form.slackAccount) {
       setAccountMapping(
