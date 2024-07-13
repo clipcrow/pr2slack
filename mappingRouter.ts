@@ -75,11 +75,10 @@ export default function (router: Router, slackToken: string) {
           setAccountMapping(key, value);
           const userAccountMap = await listAccountMapping();
           userAccountMap[key] = value;
-          const view = renderUserAccountMappingForm(userAccountMap);
-          context.response.body = {
-            response_action: "update",
-            view
-          }
+          slackClient.views.update({
+            view: renderUserAccountMappingForm(userAccountMap),
+            view_id: payload.view.id,
+          })
           context.response.status = 200;
           return;
         }
