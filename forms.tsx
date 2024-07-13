@@ -49,7 +49,6 @@ export function renderUserAccountMappingForm(
         label="Slack Account"
         blockId="slackAccount"
         name="state"
-        value=""
         placeholder="Select a Slack account"
         required
       />
