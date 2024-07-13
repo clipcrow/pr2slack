@@ -69,13 +69,12 @@ export default function (router: Router, slackToken: string) {
       if (slackAccount) {
         const githubAccount = payload.view?.state?.values?.githubAccount;
         const meta = JSON.parse(payload.view.private_metadata || "{}");
-        const value = githubAccount?.state?.value || meta.githubAccount;
-        if (value) {
-          setAccountMapping(
-            value,
-            slackAccount.state.selected_user,
-          );
+        const key = githubAccount?.state?.value || meta.githubAccount;
+        const value = slackAccount.state.selected_user;
+        if (key && value) {
+          setAccountMapping(key, value);
           const userAccountMap = await listAccountMapping();
+          userAccountMap[key] = value;
           const view = renderUserAccountMappingForm(userAccountMap);
           context.response.body = {
             response_action: "update",
