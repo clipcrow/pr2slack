@@ -72,23 +72,16 @@ Holds tokens for operating GitHubtoo.
 
 ## Call Slack API
 
-- **chat.postMessage**
-  - scope
-    - `chat:write`
-- **chat.update**
-  - scope
-    - `chat:write`
+- **chat.postMessage**, **chat.update**, **view.open**, **view.update**
+  - scope: `chat:write`
 - **conversations.history**
-  - scope
-    - `channels:history`
-    - `groups:history`
-    - `im:history`
-    - `mpim:history`
+  - scope: `channels:history`, `groups:history`, `im:history`, `mpim:history`
 - Slash command
-  - scope
-    - `commands`
+  - scope: `commands`
 
-### Deno Deploy env
+### Deno Deploy env settings
 
-- GITHUB_TOKEN: ghp_abcdefghijklmnopqrstuvwxyz0123456789
-- SLACK_TOKEN: xoxb-1234567890123-1234567890123-abcdefghijklmnopqrstuvwx
+- GITHUB_TOKEN: GitHub personal access token (classic)
+  - for example, `ghp_abcdefghijklmnopqrstuvwxyz0123456789`
+- SLACK_TOKEN: Slack Bot token with scopes as above.
+  - for example, `xoxb-1234567890123-1234567890123-abcdefghijklmnopqrstuvwx`
