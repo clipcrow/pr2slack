@@ -30,10 +30,10 @@ GraphQL(GitHub v4) was used as the method for acquiring detailed data of pull
 request. It was very convenient because it took less effort than the REST
 API(GitHub v3).
 
-Store the bot tokens needed to use the Slack API in Deno Deploy Secrets. The
+Store the bot token needed to use the Slack API in Deno Deploy Secrets. The
 Slack channel ID, Slack and Github account pair, will be stored in Deno KV.
 
-Holds tokens for operating GitHubtoo.
+Holds a token for operating GitHub in Deno Deploy Secrets too.
 
 - serve.ts: The API server.
   - createContext.ts: Adjust the JSON of the received webhook.
@@ -72,7 +72,9 @@ Holds tokens for operating GitHubtoo.
 
 ## Call Slack API
 
-- **chat.postMessage**, **chat.update**, **view.open**, **view.update**
+- **views.open**, **views.update**
+  - scope: No scope required 
+- **chat.postMessage**, **chat.update**
   - scope: `chat:write`
 - **conversations.history**
   - scope: `channels:history`, `groups:history`, `im:history`, `mpim:history`
