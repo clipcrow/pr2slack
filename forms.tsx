@@ -14,7 +14,6 @@ import type { KeyValueStore } from "./types.ts";
 
 export function renderUserAccountMappingForm(
   userAccountMap: KeyValueStore<string>,
-  account: string = "",
 ) {
   const fields = Object.keys(userAccountMap).map((githubAccount) => {
     const slackAccount = userAccountMap[githubAccount];
@@ -42,7 +41,6 @@ export function renderUserAccountMappingForm(
         blockId="githubAccount"
         name="state"
         type="text"
-        value={account}
         placeholder="Write a GitHub user-name"
         required
       />
