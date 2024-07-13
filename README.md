@@ -41,7 +41,7 @@ Holds a token for operating GitHub in Deno Deploy Secrets too.
     - getActualGraph.ts: GraphQL
     - renderer.tsx: [jsx-slack](https://github.com/yhatt/jsx-slack)
 
-## handle event of GitHub Actions
+## handle event of GitHub via webhook
 
 - Event > Activity Type
   - **pull_request**
@@ -81,7 +81,7 @@ Holds a token for operating GitHub in Deno Deploy Secrets too.
 - Slash command
   - scope: `commands`
 
-### Deno Deploy env settings
+### Deno Deploy Secrets settings
 
 - GITHUB_TOKEN: GitHub personal access token (classic)
   - for example, `ghp_abcdefghijklmnopqrstuvwxyz0123456789`
