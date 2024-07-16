@@ -1,4 +1,5 @@
 import { Router } from "oak";
+import { delay } from "std/async";
 import { listAccountMapping, listRepositoryMapping } from "./store.ts";
 import createContext from "./createContext.ts";
 import postNotification from "./postNotification.ts";
@@ -19,6 +20,7 @@ kv.listenQueue(async (payload) => {
         await listAccountMapping(),
         cx,
       );
+      await delay(1000);
     }
   }
 });
