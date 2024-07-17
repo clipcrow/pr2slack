@@ -27,18 +27,21 @@ kv.listenQueue(async (payload) => {
         .set(key, true)
         .commit();
       if (result.ok) {
-        await postNotification(
-          githubToken,
-          slackToken,
-          slackChannel,
-          await listAccountMapping(),
-          cx,
-        );
-        await delay(1000);
-        await kv.atomic()
-          .check({ key, versionstamp: result.versionstamp })
-          .delete(key)
-          .commit();
+        try {
+          await postNotification(
+            githubToken,
+            slackToken,
+            slackChannel,
+            await listAccountMapping(),
+            cx,
+          );
+          await delay(1000);
+        } finally {
+          await kv.atomic()
+            .check({ key, versionstamp: result.versionstamp })
+            .delete(key)
+            .commit();
+        }
       }
     }
   }
