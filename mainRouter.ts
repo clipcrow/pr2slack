@@ -27,7 +27,6 @@ kv.listenQueue(async (payload) => {
         await kv.atomic()
           .check({ key: nonce.key, versionstamp: nonce.versionstamp })
           .delete(nonce.key)
-          .sum(["processed_count"], 1n)
           .commit();
       }
     }
@@ -48,7 +47,6 @@ export default function (
           .check({ key: ["nonces", nonce], versionstamp: null })
           .enqueue({ nonce, cx, githubToken, slackToken })
           .set(["nonces", nonce], true)
-          .sum(["enqueued_count"], 1n)
           .commit();
         context.response.status = 200;
       }
