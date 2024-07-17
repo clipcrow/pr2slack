@@ -1,34 +1,43 @@
 import { Router } from "oak";
+import { delay } from "std/async";
 import { listAccountMapping, listRepositoryMapping } from "./store.ts";
 import createContext from "./createContext.ts";
 import postNotification from "./postNotification.ts";
+import type { WebhookContext } from "./types.ts";
 
 const kv = await Deno.openKv();
 
+function getKeyFromContext(cx: WebhookContext): Deno.KvKey {
+  const owner = cx.repository.owner.login;
+  const name = cx.repository.name;
+  const number = cx.number;
+  return ["pull_request", owner, name, number];
+}
+
 kv.listenQueue(async (payload) => {
-  if (payload.nonce) {
-    const nonce = await kv.get(["nonces", payload.nonce]);
-    if (nonce.value === null) {
-      return;
-    }
-    const { cx, githubToken, slackToken } = payload;
-    if (cx?.repository?.url && cx.baseRef && githubToken && slackToken) {
-      const repositoryMap = await listRepositoryMapping();
-      const url = `${cx.repository.url}/tree/${cx.baseRef}`;
-      const slackChannel = repositoryMap[url];
-      if (slackChannel) {
-        await postNotification(
-          githubToken,
-          slackToken,
-          slackChannel,
-          await listAccountMapping(),
-          cx,
-        );
-        await kv.atomic()
-          .check({ key: nonce.key, versionstamp: nonce.versionstamp })
-          .delete(nonce.key)
-          .commit();
-      }
+  const { cx, githubToken, slackToken } = payload;
+  const url = cx?.repository?.url;
+  if (url && cx.baseRef && githubToken && slackToken) {
+    const repositoryMap = await listRepositoryMapping();
+    const slackChannel = repositoryMap[`${url}/tree/${cx.baseRef}`];
+    if (slackChannel) {
+      const key = getKeyFromContext(cx);
+      const result = await kv.atomic()
+        .check({ key, versionstamp: null })
+        .set(key, true)
+        .commit();
+      await postNotification(
+        githubToken,
+        slackToken,
+        slackChannel,
+        await listAccountMapping(),
+        cx,
+      );
+      await delay(1000);
+      await kv.atomic()
+        .check({ key, versionstamp: result.ok ? result.versionstamp : null })
+        .delete(key)
+        .commit();
     }
   }
 });
@@ -42,12 +51,7 @@ export default function (
     if (context.request.hasBody) {
       const cx = createContext(await context.request.body.json());
       if (cx) {
-        const nonce = crypto.randomUUID();
-        await kv.atomic()
-          .check({ key: ["nonces", nonce], versionstamp: null })
-          .enqueue({ nonce, cx, githubToken, slackToken })
-          .set(["nonces", nonce], true)
-          .commit();
+        await kv.enqueue({ cx, githubToken, slackToken });
         context.response.status = 200;
       }
     }
