@@ -117,7 +117,7 @@ export default async function (
       webhookContext.action,
     )
   ) {
-    return;
+    return null;
   }
 
   const renderModel = { ...webhookContext, userAccountMap, ...actualGraph };
@@ -131,17 +131,19 @@ export default async function (
   });
   if (!result.ok) {
     console.log({ result });
-    return;
+    return result;
   }
 
   // ActionLog
   const actionLog = renderActionLog(renderModel);
   if (actionLog) {
-    await upsertMessage({
+    return await upsertMessage({
       ...args,
       notification: false,
       blocks: actionLog,
       ts: result.ts,
     });
   }
+
+  return result;
 }

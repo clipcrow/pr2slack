@@ -3,45 +3,36 @@ import { delay } from "std/async";
 import { listAccountMapping, listRepositoryMapping } from "./store.ts";
 import createContext from "./createContext.ts";
 import postNotification from "./postNotification.ts";
-import type { WebhookContext } from "./types.ts";
 
 const kv = await Deno.openKv();
-
-function getKeyFromContext(cx: WebhookContext): Deno.KvKey {
-  const owner = cx.repository.owner.login;
-  const name = cx.repository.name;
-  const number = cx.number;
-  return ["pull_request", owner, name, number];
-}
 
 kv.listenQueue(async (payload) => {
   const { cx, githubToken, slackToken } = payload;
   const url = cx?.repository?.url;
-  if (url && cx.baseRef && githubToken && slackToken) {
+  if (url && cx.baseRef && cx.number && githubToken && slackToken) {
     const repositoryMap = await listRepositoryMapping();
     const slackChannel = repositoryMap[`${url}/tree/${cx.baseRef}`];
     if (slackChannel) {
-      const key = getKeyFromContext(cx);
-      const result = await kv.atomic()
+      const key = ["flag", url, cx.number];
+      const kvResult = await kv.atomic()
         .check({ key, versionstamp: null })
         .set(key, true)
         .commit();
-      if (result.ok) {
-        try {
-          await postNotification(
-            githubToken,
-            slackToken,
-            slackChannel,
-            await listAccountMapping(),
-            cx,
-          );
-          await delay(1000);
-        } finally {
-          await kv.atomic()
-            .check({ key, versionstamp: result.versionstamp })
-            .delete(key)
-            .commit();
+      if (!kvResult.ok) throw `retry ${key}`; 
+      try {
+        const slackResult = await postNotification(
+          githubToken,
+          slackToken,
+          slackChannel,
+          await listAccountMapping(),
+          cx,
+        );
+        if (slackResult && slackResult.ok == false) {
+          throw slackResult.error;
         }
+        await delay(1000);
+      } finally {
+        await kv.delete(key);
       }
     }
   }
