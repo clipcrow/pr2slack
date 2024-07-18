@@ -73,7 +73,7 @@ Holds a token for operating GitHub in Deno Deploy Secrets too.
 ## Call Slack API
 
 - **views.open**, **views.update**
-  - scope: No scope required 
+  - scope: No scope required
 - **chat.postMessage**, **chat.update**
   - scope: `chat:write`
 - **conversations.history**

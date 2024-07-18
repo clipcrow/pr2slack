@@ -130,7 +130,7 @@ export default async function (
     ts: previousTS,
   });
   if (!result.ok) {
-    console.log({ result });
+    console.error({ result });
     return result;
   }
 

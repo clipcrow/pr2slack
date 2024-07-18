@@ -18,7 +18,10 @@ kv.listenQueue(async (payload) => {
         .check({ key, versionstamp: null })
         .set(key, true)
         .commit();
-      if (!kvResult.ok) throw `retry ${key}`; 
+      if (!kvResult.ok) {
+        await delay(1000);
+        throw `retry ${key}`; 
+      }
       try {
         const slackResult = await postNotification(
           githubToken,
@@ -27,10 +30,9 @@ kv.listenQueue(async (payload) => {
           await listAccountMapping(),
           cx,
         );
-        if (slackResult && slackResult.ok == false) {
+        if (slackResult && !slackResult.ok) {
           throw slackResult.error;
         }
-        await delay(1000);
       } finally {
         await kv.delete(key);
       }
