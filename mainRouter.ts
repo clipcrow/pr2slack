@@ -1,5 +1,4 @@
 import { Router } from "oak";
-import { delay } from "std/async";
 import { listAccountMapping, listRepositoryMapping } from "./store.ts";
 import createContext from "./createContext.ts";
 import postNotification from "./postNotification.ts";
@@ -19,8 +18,7 @@ kv.listenQueue(async (payload) => {
         .set(key, true)
         .commit();
       if (!kvResult.ok) {
-        await delay(1000);
-        throw `retry ${key}`; 
+        throw `retry ${key}`;
       }
       try {
         const slackResult = await postNotification(
@@ -49,7 +47,10 @@ export default function (
     if (context.request.hasBody) {
       const cx = createContext(await context.request.body.json());
       if (cx) {
-        await kv.enqueue({ cx, githubToken, slackToken });
+        await kv.enqueue(
+          { cx, githubToken, slackToken },
+          { backoffSchedule: [1000, 3000, 5000, 7500, 10000] },
+        );
         context.response.status = 200;
       }
     }
