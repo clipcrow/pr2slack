@@ -1,5 +1,5 @@
 import { Router } from "oak";
-import { CSS, KATEX_CSS, render } from "gfm";
+import { CSS, render } from "gfm";
 
 function getHTML(markdown: string) {
   const body = render(markdown);
@@ -15,7 +15,6 @@ function getHTML(markdown: string) {
           margin: 0 auto;
         }
         ${CSS}
-        ${KATEX_CSS}
       </style>
     </head>
     <body>
@@ -27,12 +26,10 @@ function getHTML(markdown: string) {
   `;
 }
 
-async function readme() {
-  return getHTML(await Deno.readTextFile("README.md"));
-}
-
 export default function (router: Router) {
   router.get("/", async (context) => {
-    context.response.body = await readme();
+    context.response.body = getHTML(
+      await Deno.readTextFile("README.md"),
+    );
   });
 }
