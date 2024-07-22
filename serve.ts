@@ -8,9 +8,9 @@ const slackToken = Deno.env.get("SLACK_TOKEN");
 
 if (githubToken && slackToken) {
   const router = new Router();
-  mainRouter(router, githubToken, slackToken);
-  supportRouter(router, githubToken, slackToken);
+  mainRouter(router, slackToken, githubToken);
   mappingRouter(router, slackToken);
+  supportRouter(router);
 
   const app = new Application();
   app.use(router.routes());

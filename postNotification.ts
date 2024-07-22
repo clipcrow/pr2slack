@@ -90,16 +90,16 @@ async function upsertMessage(
 }
 
 export default async function (
-  githubToken: string,
   slackToken: string,
   slackChannel: string,
+  githubToken: string,
   userAccountMap: KeyValueStore<string>,
   webhookContext: WebhookContext,
 ) {
   const args = {
-    githubToken,
     slackToken,
     slackChannel,
+    githubToken,
     owner: webhookContext.repository.owner.login,
     name: webhookContext.repository.name,
     number: webhookContext.number,

@@ -31,21 +31,8 @@ async function readme() {
   return getHTML(await Deno.readTextFile("README.md"));
 }
 
-export default function (
-  router: Router,
-  githubToken: string,
-  slackToken: string,
-) {
+export default function (router: Router) {
   router.get("/", async (context) => {
     context.response.body = await readme();
-  });
-
-  router.get("/env", (context) => {
-    context.response.body = getHTML(
-      `- GITHUB_TOKEN: ${githubToken.slice(0, 8)}...${
-        githubToken.slice(-8)
-      }\n` +
-        `- SLACK_TOKEN: ${slackToken.slice(0, 8)}...${slackToken.slice(-8)}\n`,
-    );
   });
 }

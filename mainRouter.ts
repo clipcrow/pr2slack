@@ -6,9 +6,9 @@ import postNotification from "./postNotification.ts";
 const kv = await Deno.openKv();
 
 kv.listenQueue(async (payload) => {
-  const { cx, githubToken, slackToken } = payload;
+  const { cx, slackToken, githubToken } = payload;
   const url = cx?.repository?.url;
-  if (url && cx.baseRef && cx.number && githubToken && slackToken) {
+  if (url && cx.baseRef && cx.number && slackToken && githubToken) {
     const repositoryMap = await listRepositoryMapping();
     const slackChannel = repositoryMap[`${url}/tree/${cx.baseRef}`];
     if (slackChannel) {
@@ -22,9 +22,9 @@ kv.listenQueue(async (payload) => {
       }
       try {
         const slackResult = await postNotification(
-          githubToken,
           slackToken,
           slackChannel,
+          githubToken,
           await listAccountMapping(),
           cx,
         );
@@ -40,15 +40,15 @@ kv.listenQueue(async (payload) => {
 
 export default function (
   router: Router,
-  githubToken: string,
   slackToken: string,
+  githubToken: string,
 ) {
   router.post("/webhook", async (context) => {
     if (context.request.hasBody) {
       const cx = createContext(await context.request.body.json());
       if (cx) {
         await kv.enqueue(
-          { cx, githubToken, slackToken },
+          { cx, slackToken, githubToken },
           { backoffSchedule: [1000, 3000, 5000, 7500, 10000] },
         );
         context.response.status = 200;
