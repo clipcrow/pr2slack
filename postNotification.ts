@@ -113,7 +113,7 @@ export default async function (
 
   if (
     !previousTS &&
-    !["review_request_removed", "review_requested", "submitted"].includes(
+    !["closed", "review_request_removed", "review_requested", "submitted"].includes(
       webhookContext.action,
     )
   ) {
